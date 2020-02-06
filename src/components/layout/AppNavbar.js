@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { AppBar, Toolbar } from '@material-ui/core'
+import { AppBar } from '@material-ui/core'
+import BarSession from './bar/BarSession';
 
 class AppNavbar extends Component {
   render() {
     return (
       <div>
         <AppBar position='static'>
-          <Toolbar></Toolbar>
+          <BarSession/>
         </AppBar>
       </div>
     );
