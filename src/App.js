@@ -8,7 +8,7 @@ import theme from './theme/theme'
 // Components
 import InmueblesList from './components/views/InmueblesList';
 import AppNavbar from './components/layout/AppNavbar';
-import SignupForm from './components/forms/SignupForm';
+import SignupForm from './components/forms/SignupForm/SignupForm';
 
 class App extends Component {
   render(){
