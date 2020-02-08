@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Container, Avatar, Typography, Grid, TextField, Button } from '@material-ui/core';
 import LockOutLineIcon from '@material-ui/icons/LockOutlined'
+import { compose } from 'recompose'
+
 import { style } from './signupFormStyle'
+import { consumerFirebase } from '../../../server'
 
 const initialState = {
   userName: '',
@@ -13,7 +16,19 @@ const initialState = {
 class SignupForm extends Component {
 
   state = {
+    firebase: null,
     user: initialState
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    
+    if(nextProps.firebase === prevState.firebase){
+      return null
+    }
+
+    return {
+      firebase: nextProps.firebase
+    }
   }
 
   handleOnChange = e => {
@@ -28,10 +43,18 @@ class SignupForm extends Component {
   handleOnSubmit = e => {
     e.preventDefault()
 
-    console.log(this.state.user)
-    this.setState({
-      user : initialState
+    const { user, firebase } = this.state
+
+    firebase.db
+    .collection('Users')
+    .add(user)
+    .then(userAdd => {
+      console.log('Usuario añadido con éxito', userAdd)
+      this.setState({
+        user : initialState
+      })
     })
+    .catch(error => console.log('error:', error))
   }
 
   render() {
@@ -75,4 +98,4 @@ class SignupForm extends Component {
   }
 }
 
-export default SignupForm;
+export default compose(consumerFirebase)(SignupForm);
