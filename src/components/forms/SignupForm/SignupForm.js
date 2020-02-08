@@ -44,17 +44,34 @@ class SignupForm extends Component {
     e.preventDefault()
 
     const { user, firebase } = this.state
+    const { history } = this.props
 
-    firebase.db
-    .collection('Users')
-    .add(user)
-    .then(userAdd => {
-      console.log('Usuario añadido con éxito', userAdd)
-      this.setState({
-        user : initialState
+    firebase.auth
+    .createUserWithEmailAndPassword(user.userEmail, user.userPassword)
+    .then(auth => {
+
+      const userDB = {
+        userId : auth.user.uid,
+        userEmail: user.userEmail,
+        userName: user.userName,
+        userLastName: user.userLastName
+      }
+
+      firebase.db
+      .collection('Users')
+      .add(userDB)
+      .then(userAdd => {
+
+        this.setState({
+          user : initialState
+        })
+        history.push('/')
       })
+      .catch(error => console.log('error:', error))
+
     })
-    .catch(error => console.log('error:', error))
+    .catch(error => console.log(error))
+
   }
 
   render() {
