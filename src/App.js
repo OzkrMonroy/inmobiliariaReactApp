@@ -9,6 +9,7 @@ import theme from './theme/theme'
 import InmueblesList from './components/views/InmueblesList';
 import AppNavbar from './components/layout/AppNavbar';
 import SignupForm from './components/forms/SignupForm/SignupForm';
+import SigninForm from './components/forms/SigninForm/SigninForm';
 
 class App extends Component {
   render(){
@@ -20,6 +21,7 @@ class App extends Component {
             <Switch>
               <Route path="/" exact component={InmueblesList}/>
               <Route path="/signup" exact component={SignupForm}/>
+              <Route path="/signin" exact component={SigninForm}/>
             </Switch>
           </Grid>
         </MuiThemeProvider>
