@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+// Firebase Context
 import Firebase, { FirebaseContext } from './server'
+// Session Context
+import { initialState } from './session/initState'
+import { SessionStateProvider } from './session/sessionStore'
+import sessionReducer from './session/reducers/sessionReducer'
 
 ReactDOM.render(
 <FirebaseContext.Provider value={new Firebase()}>
-  <App />
+  <SessionStateProvider initialState={initialState} reducer={sessionReducer}>
+    <App />
+  </SessionStateProvider>
 </FirebaseContext.Provider>
 , document.getElementById('root'));
 

@@ -20,6 +20,12 @@ class Firebase {
     this.db = app.firestore()
     this.auth = app.auth()
   }
+
+  isReady() {
+    return new Promise(resolve => {
+      this.auth.onAuthStateChanged(resolve)
+    })
+  }
 }
 
 export default Firebase
