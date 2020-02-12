@@ -6,7 +6,7 @@ class InmueblesList extends Component {
     return (
       <div>
         <Button variant="contained" color="primary" >Botón primario</Button>
-        <Button variant="outlined" color="secondary" >Botón secundario</Button>
+        <Button variant="outlined" color="secondary">Botón secundario</Button>
       </div>
     );
   }
