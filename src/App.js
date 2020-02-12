@@ -24,6 +24,8 @@ function App(props) {
             })
   }, [firebase])
 
+  //TODO: Crear un Spinner mientras carga los datos
+
   return isFirebaseReady !== false ? (
     <Router>
       <MuiThemeProvider theme={theme}>

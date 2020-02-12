@@ -1,4 +1,16 @@
-const sessionReducer = (state, action) => {
+export const initialState = {
+  user: {
+    name: '',
+    lastName: '',
+    email: '',
+    photo: '',
+    id: '',
+    phoneNumber: ''
+  },
+  isAuthenticated: false
+}
+
+const sessionReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SIGNIN":
       return {

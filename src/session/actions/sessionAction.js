@@ -1,4 +1,4 @@
-import { initialState } from '../initState'
+// import { initialState } from '../initState'
 
 export const signinAction = (dispatch, firebase, email, password) => {
 

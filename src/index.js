@@ -7,11 +7,11 @@ import Firebase, { FirebaseContext } from './server'
 // Session Context
 import { initialState } from './session/initState'
 import { SessionStateProvider } from './session/sessionStore'
-import sessionReducer from './session/reducers/sessionReducer'
+import { mainReducer } from './session/reducers'
 
 ReactDOM.render(
 <FirebaseContext.Provider value={new Firebase()}>
-  <SessionStateProvider initialState={initialState} reducer={sessionReducer}>
+  <SessionStateProvider initialState={initialState} reducer={mainReducer}>
     <App />
   </SessionStateProvider>
 </FirebaseContext.Provider>
