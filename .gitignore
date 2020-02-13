@@ -12,13 +12,13 @@
 /build
 
 # firebase files and Notes
-/.firebaserc
-/firebase.json
-/FirebaseConfig.md
-/firestore.indexes.json
-/firestore.rules
-/MaterialConfig.md
-/storage.rules
+# /.firebaserc
+# /firebase.json
+# /FirebaseConfig.md
+# /firestore.indexes.json
+# /firestore.rules
+# /MaterialConfig.md
+# /storage.rules
 
 # misc
 .DS_Store

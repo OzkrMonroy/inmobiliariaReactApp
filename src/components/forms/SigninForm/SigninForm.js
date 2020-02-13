@@ -5,6 +5,10 @@ import LockOutLineIcon from "@material-ui/icons/LockOutlined";
 import { compose } from 'recompose'
 import { consumerFirebase } from '../../../server'
 
+import { signinAction } from '../../../session/actions/sessionAction'
+import { displaySnackBar } from '../../../session/actions/snackBarAction'
+import { SessionStateContext } from '../../../session/sessionStore'
+
 import style from "./signinFormStyles";
 
 const initialState = {
@@ -13,6 +17,8 @@ const initialState = {
 }
 
 class SigninForm extends Component {
+
+  static contextType = SessionStateContext
 
   state = {
     firebase: null,
@@ -39,21 +45,23 @@ class SigninForm extends Component {
     })
   }
 
-  handleOnSubmit = e => {
+  handleOnSubmit = async e => {
     e.preventDefault()
 
+    const [{session}, dispatch] = this.context
     const { firebase, userData } = this.state
     const { history } = this.props
 
-    firebase.auth
-    .signInWithEmailAndPassword(userData.userEmail, userData.userPassword)
-    .then(auth => {
-      this.setState({
-        userData: initialState
-      })
+    let result = await signinAction(dispatch, firebase, userData.userEmail, userData.userPassword)
+
+    if(result.status) {
       history.push('/')
-    })
-    .catch(error => console.log(error))
+    }else {
+      displaySnackBar(dispatch, {
+        isOpen: true,
+        message: result.message.message
+      })
+    }
 
   }
 

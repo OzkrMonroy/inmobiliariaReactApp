@@ -21,29 +21,32 @@ export const signinAction = (dispatch, firebase, email, password) => {
           isAuthenticated : true
         })
 
-        resolve()
+        resolve({status: true})
       })
     })
-    .catch(error => console.log('error', error))
+    .catch(error => {
+      console.log('error', error)
+      resolve({status: false, message: error})
+    })
   })
 
 }
 
-export const createUser = (dispatch, firebase, user) => {
+export const createUserAction = (dispatch, firebase, user) => {
 
   return new Promise((resolve, reject) => {
 
     firebase.auth
-    .createUserWithEmailAndPassword(user.userEmal, user.userPassword)
+    .createUserWithEmailAndPassword(user.userEmail, user.userPassword)
     .then(auth => {
       firebase.db
       .collection('Users')
       .doc(auth.user.uid)
       .set({
         id : auth.user.uid,
-        email: auth.user.userEmail,
-        name: auth.user.userName,
-        lasName: auth.user.userLastName
+        email: user.userEmail,
+        name: user.userName,
+        lastName: user.userLastName
       }, {merge: true})
       .then(doc => {
         user.id = auth.user.uid
@@ -54,10 +57,17 @@ export const createUser = (dispatch, firebase, user) => {
           isAuthenticated : true
         })
 
-        resolve()
+        resolve({status: true})
+      })
+      .catch(error => {
+        console.log(error)
+        resolve({status: false, message: error})
       })
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.log(error)
+      resolve({status: false, message: error})
+    })
   })
 }
 

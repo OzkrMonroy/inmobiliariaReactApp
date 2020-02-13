@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
-import { Grid, Snackbar } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 //Theme settings
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import theme from './theme/theme'
@@ -9,6 +9,7 @@ import InmueblesList from './components/views/InmueblesList';
 import AppNavbar from './components/layout/AppNavbar';
 import SignupForm from './components/forms/SignupForm/SignupForm';
 import SigninForm from './components/forms/SigninForm/SigninForm';
+import SnackBar from './components/snackBar/SnackBar';
 
 import { FirebaseContext } from './server'
 
@@ -33,24 +34,9 @@ function App(props) {
 
   return isFirebaseReady !== false ? (
     <Fragment>
-      <Snackbar 
-        anchorOrigin={{vertical:"bottom", horizontal:"center"}}
-        open={openSnackBar ? openSnackBar.open : false}
-        autoHideDuration={3000}
-        ContentProps={{"aria-describedby" : "message-id"}}
-        message={ <span id="message-id">
-          {openSnackBar ? openSnackBar.message : "" }
-        </span> }
-        onClose={() => {
-          dispatch({
-            type: "OPEN_SNACKBAR",
-            open: false,
-            message: ''
-          })
-        }}
-      >
+      
+      <SnackBar openSnackBar={openSnackBar} dispatch={dispatch}/>
 
-      </Snackbar>
       <Router>
       <MuiThemeProvider theme={theme}>
         <AppNavbar/>

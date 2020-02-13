@@ -6,6 +6,10 @@ import { compose } from 'recompose'
 import { style } from './signupFormStyle'
 import { consumerFirebase } from '../../../server'
 
+import { createUserAction } from '../../../session/actions/sessionAction'
+import { displaySnackBar } from '../../../session/actions/snackBarAction'
+import { SessionStateContext } from '../../../session/sessionStore'
+
 const initialState = {
   userName: '',
   userLastName: '',
@@ -14,6 +18,8 @@ const initialState = {
 }
 
 class SignupForm extends Component {
+
+  static contextType = SessionStateContext
 
   state = {
     firebase: null,
@@ -40,37 +46,23 @@ class SignupForm extends Component {
     })
   }
 
-  handleOnSubmit = e => {
+  handleOnSubmit = async e => {
     e.preventDefault()
 
+    const [{session}, dispatch] = this.context
     const { user, firebase } = this.state
     const { history } = this.props
 
-    firebase.auth
-    .createUserWithEmailAndPassword(user.userEmail, user.userPassword)
-    .then(auth => {
+    let result = await createUserAction(dispatch, firebase, user)
 
-      const userDB = {
-        userId : auth.user.uid,
-        userEmail: user.userEmail,
-        userName: user.userName,
-        userLastName: user.userLastName
-      }
-
-      firebase.db
-      .collection('Users')
-      .add(userDB)
-      .then(userAdd => {
-
-        this.setState({
-          user : initialState
-        })
-        history.push('/')
+    if(result.status) {
+      history.push('/')
+    }else {
+      displaySnackBar(dispatch, {
+        isOpen: true,
+        message: result.message.message
       })
-      .catch(error => console.log('error:', error))
-
-    })
-    .catch(error => console.log(error))
+    }
 
   }
 
