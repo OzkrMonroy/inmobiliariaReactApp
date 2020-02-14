@@ -72,7 +72,7 @@ export const createUserAction = (dispatch, firebase, user) => {
 }
 
 //TODO: Optimizar esta parte
-export const SignOut = (dispatch, firebase) => {
+export const SignOutAction = (dispatch, firebase) => {
   return new Promise((resolve, reject) => {
 
     firebase.auth
