@@ -11,6 +11,8 @@ import SignupForm from './components/forms/SignupForm/SignupForm';
 import SigninForm from './components/forms/SigninForm/SigninForm';
 import SnackBar from './components/snackBar/SnackBar';
 
+// Auth and security
+import AuthenticatedRoute from './auth/AuthenticatedRoute';
 import { FirebaseContext } from './server'
 
 //Representación del context Provider
@@ -42,7 +44,7 @@ function App(props) {
         <AppNavbar/>
         <Grid container>
           <Switch>
-            <Route path="/" exact component={InmueblesList}/>
+            <AuthenticatedRoute exact path="/" authFirebase={firebase.auth.currentUser} component={InmueblesList}/>
             <Route path="/signup" exact component={SignupForm}/>
             <Route path="/signin" exact component={SigninForm}/>
           </Switch>
