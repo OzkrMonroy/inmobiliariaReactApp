@@ -7,7 +7,7 @@ export const RightDrawerMenu = ({styleClasses, user, textUser, urlUserPhoto, Sig
     <List>
       <ListItem button component={Link} to="/signin">
         <Avatar
-          src={urlUserPhoto}
+          src={user.photo || urlUserPhoto}
         />
         <ListItemText
             classes={{primary: styleClasses.listItemText}}

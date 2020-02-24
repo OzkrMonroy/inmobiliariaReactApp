@@ -131,7 +131,7 @@ class BarSession extends Component {
             </IconButton>
             <Button color="inherit" onClick={this.signOut}>Signout</Button>
             <Button color="inherit">{textUser}</Button>
-            <Avatar src={userPhotoTemp}></Avatar>
+            <Avatar src={user.photo || userPhotoTemp}></Avatar>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton color="inherit" onClick={() => this.toggleDrawer("right", true)}>

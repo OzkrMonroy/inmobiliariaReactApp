@@ -8,6 +8,9 @@ import { styles } from "./userProfileStyles";
 import userDefaultPhoto from "../../../logo.svg";
 import { displaySnackBar } from "../../../session/actions/snackBarAction";
 
+import ImageUploader from 'react-images-upload'
+import uuid from 'uuid'
+
 let initialState = {
   name: "",
   lastName: "",
@@ -66,6 +69,42 @@ const UserProfile = props => {
     });
   };
 
+  const onChangeSelectProfileImage = photos => {
+    const photo = photos[0]
+    // const uniquePhotoCode = uuid.v4()
+    const photoName = photo.name
+    const photoExtension = photoName.split('.').pop()
+    
+    // const profilePhotoName = (photoName.split('')[0] + '_' + uniquePhotoCode + '.' + photoExtension).replace(/\s/g, '_').toLowerCase()
+    const profilePhotoName = ('profilePhoto.' + photoExtension).replace(/\s/g, '_').toLowerCase()
+
+    firebase.saveFileInStorage(profilePhotoName, photo, firebase.auth.currentUser.uid)
+    .then(metaData => {
+      firebase.getFileUrl(profilePhotoName, firebase.auth.currentUser.uid)
+      .then(urlPhoto => {
+        userState.photo = urlPhoto
+
+        firebase.db
+        .collection('Users')
+        .doc(firebase.auth.currentUser.uid)
+        .set({photo : urlPhoto}, {merge: true})
+        .then(userDB => {
+          dispatch({
+            type: "CHANGE_SESSION",
+            newUser: userState,
+            isAuthenticated: true
+          });
+          displaySnackBar(dispatch, {
+            isOpen: true,
+            message: "Se guardaron los cambios correctamente"
+          });
+        })
+      })
+    })
+  }
+
+  let imageComponentKey = uuid.v4()
+
   return session ? (
     <Container component="main" maxWidth="md" justify="center">
       <div style={styles.paper}>
@@ -114,6 +153,17 @@ const UserProfile = props => {
               label="Teléfono"
               onChange={handleOnChange}
               value={userState.phoneNumber}
+            />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <ImageUploader
+              withIcon={false}
+              key={imageComponentKey}
+              singleImage={true}
+              buttonText="Selecciona una foto de perfil"
+              onChange={onChangeSelectProfileImage}
+              imgExtension={['.jpg', '.png', '.gif', '.jpeg']}
+              maxFileSize={5242880}
             />
           </Grid>
         </Grid>

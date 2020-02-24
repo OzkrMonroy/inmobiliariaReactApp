@@ -1,6 +1,7 @@
 import app from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
+import 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: "AIzaSyD2stxpjMUHTE8n-e7tHIjOlGi4w1ivzXg",
@@ -19,12 +20,24 @@ class Firebase {
     app.initializeApp(firebaseConfig)
     this.db = app.firestore()
     this.auth = app.auth()
+    this.storage = app.storage()
   }
 
   isReady() {
     return new Promise(resolve => {
       this.auth.onAuthStateChanged(resolve)
     })
+  }
+
+  saveFileInStorage = (fileName, file, userName) => {
+    const path = `${userName}/profilePhoto/${fileName}`
+
+    return this.storage.ref().child(path).put(file)
+  }
+
+  getFileUrl = (fileName, userName) => {
+    const path = `${userName}/profilePhoto/${fileName}`
+    return this.storage.ref().child(path).getDownloadURL()
   }
 }
 
