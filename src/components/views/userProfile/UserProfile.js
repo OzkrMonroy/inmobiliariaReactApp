@@ -69,13 +69,12 @@ const UserProfile = props => {
     });
   };
 
+  //TODO: Crear la función seleccionar imagen desde el Avatar.
   const onChangeSelectProfileImage = photos => {
     const photo = photos[0]
-    // const uniquePhotoCode = uuid.v4()
     const photoName = photo.name
     const photoExtension = photoName.split('.').pop()
     
-    // const profilePhotoName = (photoName.split('')[0] + '_' + uniquePhotoCode + '.' + photoExtension).replace(/\s/g, '_').toLowerCase()
     const profilePhotoName = ('profilePhoto.' + photoExtension).replace(/\s/g, '_').toLowerCase()
 
     firebase.saveFileInStorage(profilePhotoName, photo, firebase.auth.currentUser.uid)

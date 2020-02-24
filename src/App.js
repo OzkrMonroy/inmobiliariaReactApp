@@ -18,6 +18,7 @@ import { FirebaseContext } from "./server";
 
 //Representación del context Provider
 import { useSessionStateValue } from "./session/sessionStore";
+import NewHome from "./components/views/newHome/NewHome";
 
 function App(props) {
   let firebase = useContext(FirebaseContext);
@@ -53,6 +54,12 @@ function App(props) {
                 path="/user/profile"
                 authFirebase={firebase.auth.currentUser}
                 component={UserProfile}
+              />
+              <AuthenticatedRoute
+                exact
+                path="/homes/new"
+                authFirebase={firebase.auth.currentUser}
+                component={NewHome}
               />
               <Route path="/signup" exact component={SignupForm} />
               <Route path="/signin" exact component={SigninForm} />

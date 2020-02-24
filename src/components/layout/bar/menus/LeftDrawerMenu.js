@@ -12,11 +12,11 @@ export const LeftDrawerMenu = ({styleClasses}) => (
     </List>
     <Divider/>
     <List>
-      <ListItem component={Link} button to="">
+      <ListItem component={Link} button to="/homes/new">
         <i className="material-icons">add_box</i>
         <ListItemText classes={{primary: styleClasses.listItemText}} primary="Agregar Inmueble"/>
       </ListItem>
-      <ListItem component={Link} button to="">
+      <ListItem component={Link} button to="/">
         <i className="material-icons">business</i>
         <ListItemText classes={{primary: styleClasses.listItemText}} primary="Inmuebles"/>
       </ListItem>
