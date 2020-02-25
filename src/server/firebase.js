@@ -21,6 +21,13 @@ class Firebase {
     this.db = app.firestore()
     this.auth = app.auth()
     this.storage = app.storage()
+
+    this.storage.ref().constructor.prototype.saveDocuments = function(documents) {
+      let ref = this
+      return new Promise.all(documents.map(file => {
+        return ref.child(file.alias).put(file).then(snapshot => ref.child(file.alias).getDownloadURL())
+      }))
+    }
   }
 
   isReady() {
@@ -39,6 +46,8 @@ class Firebase {
     const path = `${userName}/profilePhoto/${fileName}`
     return this.storage.ref().child(path).getDownloadURL()
   }
+
+  saveFilesInStorage = documents => this.storage.ref().saveDocuments(documents)
 }
 
 export default Firebase
