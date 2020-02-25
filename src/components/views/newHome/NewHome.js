@@ -4,8 +4,59 @@ import { Link } from 'react-router-dom'
 import HomeIcon from '@material-ui/icons/Home'
 
 import { style } from './newHomeStyle'
+import { displaySnackBar } from '../../../session/actions/snackBarAction'
+
+import { consumerFirebase } from '../../../server'
+import { SessionStateContext } from '../../../session/sessionStore'
+
+const initialState = {
+  address: '',
+  city: '',
+  country: '',
+  description: '',
+  insideDescription: ''
+}
 
 class NewHome extends Component {
+
+  static contextType = SessionStateContext
+
+  state = {
+    newHomeData : initialState
+  }
+
+  handleOnChange = e => {
+    this.setState({
+      newHomeData : {
+        ...this.state.newHomeData,
+        [e.target.name] : e.target.value
+      }
+    })
+  }
+
+  handleOnClick = () => {
+    const { newHomeData } = this.state
+    const { firebase, history } = this.props
+    const [{session}, dispatch] = this.context
+
+    firebase.db
+    .collection('Homes')
+    .add(newHomeData)
+    .then(success => {
+      history.push('/')
+      displaySnackBar(dispatch, {
+        isOpen : true,
+        message: 'Se agregó el inmueble correctamente'
+      })
+    })
+    .catch(error => {
+      displaySnackBar(dispatch, {
+        isOpen : true,
+        message: `Ocurrió un error: ${error}`
+      })
+    })
+  }
+
   render() {
     return (
       <Container style={style.container}>
@@ -28,6 +79,8 @@ class NewHome extends Component {
                 name="address"
                 label="Dirección"
                 fullWidth
+                onChange={this.handleOnChange}
+                value={this.state.newHomeData.address}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -35,6 +88,8 @@ class NewHome extends Component {
                 name="city"
                 label="Ciudad"
                 fullWidth
+                onChange={this.handleOnChange}
+                value={this.state.newHomeData.city}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -42,6 +97,8 @@ class NewHome extends Component {
                 name="country"
                 label="País"
                 fullWidth
+                onChange={this.handleOnChange}
+                value={this.state.newHomeData.country}
               />
             </Grid>
             <Grid item xs={12} md={12}>
@@ -49,6 +106,8 @@ class NewHome extends Component {
                 name="description"
                 label="Descripción del Inmueble"
                 fullWidth
+                onChange={this.handleOnChange}
+                value={this.state.newHomeData.description}
                 multiline
               />
             </Grid>
@@ -57,6 +116,8 @@ class NewHome extends Component {
                 name="insideDescription"
                 label="Descripción del interior del Inmueble"
                 fullWidth
+                onChange={this.handleOnChange}
+                value={this.state.newHomeData.insideDescription}
                 multiline
               />
             </Grid>
@@ -71,6 +132,7 @@ class NewHome extends Component {
                 color="primary"
                 fullWidth
                 style={style.button}
+                onClick={this.handleOnClick}
               >
                 Guardar
               </Button>
@@ -82,4 +144,4 @@ class NewHome extends Component {
   }
 }
 
-export default NewHome;
+export default consumerFirebase(NewHome);
