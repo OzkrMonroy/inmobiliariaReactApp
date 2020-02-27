@@ -22,10 +22,11 @@ class Firebase {
     this.auth = app.auth()
     this.storage = app.storage()
 
-    this.storage.ref().constructor.prototype.saveDocuments = function(documents) {
+    this.storage.ref().constructor.prototype.saveDocuments = function(documents, userName) {
       let ref = this
-      return new Promise.all(documents.map(file => {
-        return ref.child(file.alias).put(file).then(snapshot => ref.child(file.alias).getDownloadURL())
+      const path = `${userName}/housesPhotos`
+      return Promise.all(documents.map(file => {
+        return ref.child(path+'/'+file.name).put(file).then(snapshot => ref.child(path+'/'+file.name).getDownloadURL())
       }))
     }
   }
@@ -47,7 +48,18 @@ class Firebase {
     return this.storage.ref().child(path).getDownloadURL()
   }
 
-  saveFilesInStorage = documents => this.storage.ref().saveDocuments(documents)
+  saveHousePhotos = (file, userName) => {
+    const path = `${userName}/housesPhotos/`
+
+    return this.storage.ref().child(path).put(file)
+  }
+
+  getHomePhotoUrl = (fileName, userName) => {
+    const path = `${userName}/housesPhotos/${fileName}`
+    return this.storage.ref().child(path).getDownloadURL()
+  }
+
+  saveFilesInStorage = (documents, userName) => this.storage.ref().saveDocuments(documents, userName)
 }
 
 export default Firebase

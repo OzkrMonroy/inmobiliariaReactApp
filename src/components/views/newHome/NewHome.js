@@ -10,13 +10,16 @@ import { displaySnackBar } from '../../../session/actions/snackBarAction'
 import { consumerFirebase } from '../../../server'
 import { SessionStateContext } from '../../../session/sessionStore'
 import uuid from 'uuid';
+import { createKeywords } from '../../../session/actions/Keyword';
 
 const initialState = {
   address: '',
   city: '',
   country: '',
   description: '',
-  insideDescription: ''
+  insideDescription: '',
+  photos: [],
+  keywords: []
 }
 
 class NewHome extends Component {
@@ -37,27 +40,37 @@ class NewHome extends Component {
     })
   }
 
+  //TODO: Crear una relación para saber que usuario creo el nuevo registro.
   handleOnClick = () => {
-    const { newHomeData } = this.state
+    const { newHomeData, photosTemp } = this.state
     const { firebase, history } = this.props
     const [{session}, dispatch] = this.context
 
-    firebase.db
-    .collection('Homes')
-    .add(newHomeData)
-    .then(success => {
-      history.push('/')
-      displaySnackBar(dispatch, {
-        isOpen : true,
-        message: 'Se agregó el inmueble correctamente'
-      })
-    })
-    .catch(error => {
-      displaySnackBar(dispatch, {
-        isOpen : true,
-        message: `Ocurrió un error: ${error}`
-      })
-    })
+    const searchText = `${newHomeData.address} ${newHomeData.city} ${newHomeData.country}`
+    let keywords = createKeywords(searchText)
+
+    firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid)
+            .then(urlArray => {
+              newHomeData.photos = urlArray
+              newHomeData.keywords = keywords
+
+              firebase.db
+              .collection('Homes')
+              .add(newHomeData)
+              .then(success => {
+                history.push('/')
+                displaySnackBar(dispatch, {
+                  isOpen : true,
+                  message: 'Se agregó el inmueble correctamente'
+                })
+              })
+              .catch(error => {
+                displaySnackBar(dispatch, {
+                  isOpen : true,
+                  message: `Ocurrió un error: ${error}`
+                })
+              })
+            })
   }
 
   savePhotosTemp = photosTemp => {
