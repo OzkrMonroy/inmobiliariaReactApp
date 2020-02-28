@@ -5,12 +5,13 @@ import { Grid } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme/theme";
 // Components
-import InmueblesList from "./components/views/InmueblesList";
+import InmueblesList from "./components/views/ListHomes/InmueblesList";
 import AppNavbar from "./components/layout/AppNavbar";
 import SignupForm from "./components/forms/SignupForm/SignupForm";
 import SigninForm from "./components/forms/SigninForm/SigninForm";
 import SnackBar from "./components/snackBar/SnackBar";
 import UserProfile from "./components/views/userProfile/UserProfile";
+import NewHome from "./components/views/newHome/NewHome";
 
 // Auth and security
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
@@ -18,7 +19,6 @@ import { FirebaseContext } from "./server";
 
 //Representación del context Provider
 import { useSessionStateValue } from "./session/sessionStore";
-import NewHome from "./components/views/newHome/NewHome";
 
 function App(props) {
   let firebase = useContext(FirebaseContext);

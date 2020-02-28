@@ -48,17 +48,6 @@ class Firebase {
     return this.storage.ref().child(path).getDownloadURL()
   }
 
-  saveHousePhotos = (file, userName) => {
-    const path = `${userName}/housesPhotos/`
-
-    return this.storage.ref().child(path).put(file)
-  }
-
-  getHomePhotoUrl = (fileName, userName) => {
-    const path = `${userName}/housesPhotos/${fileName}`
-    return this.storage.ref().child(path).getDownloadURL()
-  }
-
   saveFilesInStorage = (documents, userName) => this.storage.ref().saveDocuments(documents, userName)
 }
 

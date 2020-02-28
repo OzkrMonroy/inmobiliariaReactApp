@@ -41,6 +41,7 @@ class NewHome extends Component {
   }
 
   //TODO: Crear una relación para saber que usuario creo el nuevo registro.
+  //TODO: Crear un spinner de carga mientras se crea el nuevo registro. Mejorar la ubicacion de las fotos
   handleOnClick = () => {
     const { newHomeData, photosTemp } = this.state
     const { firebase, history } = this.props
