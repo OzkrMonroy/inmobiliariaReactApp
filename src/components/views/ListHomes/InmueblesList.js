@@ -10,12 +10,48 @@ class InmueblesList extends Component {
 
   state = {
     houses: [],
-    searchText: ""
+    searchText: "",
   }
 
   setSearchText = e => {
-    this.setState({
+    const self = this
+
+    self.setState({
       [e.target.name]: e.target.value
+    })
+
+    if(self.state.typingTimeOut){
+      clearTimeout(self.state.typingTimeOut)
+    }
+
+    self.setState({
+      name : e.target.value,
+      typing: false,
+      typingTimeOut : setTimeout(() => {
+        let objectQuery = self.props.firebase.db
+        .collection("Homes")
+        .orderBy("address")
+        .where("keywords", "array-contains", self.state.searchText.toLowerCase())
+
+        if(self.state.searchText.trim() === ""){
+          objectQuery = self.props.firebase.db
+          .collection("Homes")
+          .orderBy("address")
+        }
+
+        objectQuery.get().then(snapshot => {
+          const housesArray = snapshot.docs.map(doc => {
+            let data = doc.data()
+            let id = doc.id
+
+            return {id, ...data}
+          })
+
+          self.setState({
+            houses : housesArray
+          })
+        })
+      }, 500)
     })
   }
 
