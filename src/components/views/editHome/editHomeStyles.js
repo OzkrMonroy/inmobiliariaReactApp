@@ -20,5 +20,8 @@ export const style = {
   button: {
     marginTop: 20,
     marginBottom: 10
+  },
+  photo : {
+    height: "100px"
   }
 }
