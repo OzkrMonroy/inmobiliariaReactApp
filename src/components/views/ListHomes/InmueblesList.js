@@ -55,6 +55,29 @@ class InmueblesList extends Component {
     })
   }
 
+  //TODO: Crear un método para eliminar las imágenes.
+  deleteHouseFromFirestore = id => {
+    this.props.firebase.db
+    .collection("Homes")
+    .doc(id)
+    .delete()
+    .then(succes =>{
+      this.deleteHouseFromState(id)
+    })
+  }
+
+  deleteHouseFromState = id => {
+    const newHousesList = this.state.houses.filter(house => house.id !== id)
+
+    this.setState({
+      houses : newHousesList
+    })
+  }
+
+  redirectToEditHouse = id => {
+    this.props.history.push(`/homes/edit/${id}`)
+  }
+
   async componentDidMount() {
     let objectQuery = this.props.firebase.db.collection("Homes").orderBy("address")
 
@@ -72,6 +95,8 @@ class InmueblesList extends Component {
     })
   }
 
+  //TODO: Mostrar un spinner mientras se cargan los datos
+  //TODO: Mover las cards a un componente distinto e independiente
   render() {
     return (
       <Container style={style.cardGrid}>
@@ -121,12 +146,14 @@ class InmueblesList extends Component {
                       <Button
                         size="small"
                         color="primary"
+                        onClick={() => this.redirectToEditHouse(house.id)}
                       >
                         Editar
                       </Button>
                       <Button
                         size="small"
                         color="secondary"
+                        onClick={() => this.deleteHouseFromFirestore(house.id)}
                       >
                         Eliminar
                       </Button>

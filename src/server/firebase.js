@@ -22,11 +22,11 @@ class Firebase {
     this.auth = app.auth()
     this.storage = app.storage()
 
-    this.storage.ref().constructor.prototype.saveDocuments = function(documents, userName) {
+    this.storage.ref().constructor.prototype.saveDocuments = function(documents, userName, houseName) {
       let ref = this
-      const path = `${userName}/housesPhotos`
+      const path = `${userName}/housesPhotos/${houseName}`
       return Promise.all(documents.map(file => {
-        return ref.child(path+'/'+file.name).put(file).then(snapshot => ref.child(path+'/'+file.name).getDownloadURL())
+        return ref.child(path+'/'+file.alias).put(file).then(snapshot => ref.child(path+'/'+file.alias).getDownloadURL())
       }))
     }
   }
@@ -48,7 +48,8 @@ class Firebase {
     return this.storage.ref().child(path).getDownloadURL()
   }
 
-  saveFilesInStorage = (documents, userName) => this.storage.ref().saveDocuments(documents, userName)
+  saveFilesInStorage = (documents, userName, houseName) => this.storage.ref().saveDocuments(documents, userName, houseName)
 }
 
 export default Firebase
+//TODO: Crear un método para borrar las imágnes (firebaseFile)

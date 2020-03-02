@@ -47,10 +47,16 @@ class NewHome extends Component {
     const { firebase, history } = this.props
     const [{session}, dispatch] = this.context
 
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+
     const searchText = `${newHomeData.address} ${newHomeData.city} ${newHomeData.country}`
     let keywords = createKeywords(searchText)
 
-    firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid)
+    Object.keys(photosTemp).forEach(key => {
+      photosTemp[key].alias = photosTemp[key].name.replace(/\s/g, '_').toLowerCase()
+    })
+
+    firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid, houseName)
             .then(urlArray => {
               newHomeData.photos = urlArray
               newHomeData.keywords = keywords

@@ -12,6 +12,7 @@ import SigninForm from "./components/forms/SigninForm/SigninForm";
 import SnackBar from "./components/snackBar/SnackBar";
 import UserProfile from "./components/views/userProfile/UserProfile";
 import NewHome from "./components/views/newHome/NewHome";
+import EditHome from "./components/views/editHome/EditHome";
 
 // Auth and security
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
@@ -60,6 +61,12 @@ function App(props) {
                 path="/homes/new"
                 authFirebase={firebase.auth.currentUser}
                 component={NewHome}
+              />
+              <AuthenticatedRoute
+                exact
+                path="/homes/edit/:id"
+                authFirebase={firebase.auth.currentUser}
+                component={EditHome}
               />
               <Route path="/signup" exact component={SignupForm} />
               <Route path="/signin" exact component={SigninForm} />
