@@ -58,7 +58,16 @@ class NewHome extends Component {
 
     firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid, houseName)
             .then(urlArray => {
-              newHomeData.photos = urlArray
+              const photosArray = []
+              urlArray.forEach((url, i) => {
+                const data = {
+                  name: photosTemp[i].alias,
+                  url: url
+                }
+
+                photosArray.push(data)
+              })
+              newHomeData.photos = photosArray
               newHomeData.keywords = keywords
 
               firebase.db

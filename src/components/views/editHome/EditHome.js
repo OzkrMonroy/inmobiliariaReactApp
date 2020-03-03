@@ -92,7 +92,14 @@ class EditHome extends Component {
 
     firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid, houseName)
             .then(urlArray => {
-              newHomeData.photos = newHomeData.photos.concat(urlArray)
+              urlArray.forEach((url, i) => {
+                const data = {
+                  name: photosTemp[i].alias,
+                  url: url
+                }
+
+                newHomeData.photos = newHomeData.photos.concat(data)
+              })
 
               firebase.db
               .collection('Homes')
@@ -112,20 +119,17 @@ class EditHome extends Component {
             })
   }
 
-  deletePhotoTemp = photoUrl => async () => {
+  deletePhotoTemp = photoS => async () => {
     const { newHomeData } = this.state
     const { firebase } = this.props
     const { id } = this.props.match.params
     const [{session}, dispatch] = this.context
 
-    let photoName = photoUrl.match(/[\w-]+.(jpg|png|jpeg|gif|svg)/)
-    photoName = photoName[0].replace("2F", "")
-
     const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
 
-    await firebase.deleteFileInStorage(photoName, firebase.auth.currentUser.uid, houseName)
+    await firebase.deleteFileInStorage(photoS.name, firebase.auth.currentUser.uid, houseName)
 
-    let photoList = newHomeData.photos.filter(photo => photo !== photoUrl)
+    let photoList = newHomeData.photos.filter(photo => photo.url !== photoS.url)
 
     newHomeData.photos = photoList
 
@@ -231,7 +235,7 @@ class EditHome extends Component {
                   ? this.state.newHomeData.photos.map((photo, i) => (
                     <TableRow key={i}>
                       <TableCell align="left">
-                        <img src={photo} style={style.photo}/>
+                        <img src={photo.url} style={style.photo}/>
                       </TableCell>
                       <TableCell aling="left">
                         <Button

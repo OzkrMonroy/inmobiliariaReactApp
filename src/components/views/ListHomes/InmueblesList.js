@@ -56,13 +56,22 @@ class InmueblesList extends Component {
   }
 
   //TODO: Crear un método para eliminar las imágenes.
-  deleteHouseFromFirestore = id => {
-    this.props.firebase.db
+  deleteHouseFromFirestore = house => {
+    const { firebase } = this.props
+
+    const houseName = `${house.address}_${house.city}_${house.country}`
+
+    house.photos.forEach(async photo => {
+      
+      await firebase.deleteFileInStorage(photo.name, firebase.auth.currentUser.uid, houseName)
+    })
+
+    firebase.db
     .collection("Homes")
-    .doc(id)
+    .doc(house.id)
     .delete()
     .then(succes =>{
-      this.deleteHouseFromState(id)
+      this.deleteHouseFromState(house.id)
     })
   }
 
@@ -133,7 +142,7 @@ class InmueblesList extends Component {
                     <CardMedia 
                       style={style.cardMedia}
                       image={
-                        house.photos ? house.photos[0] : logo
+                        house.photos ? house.photos[0].url : logo
                       }
                       title="My House"
                     />
@@ -153,7 +162,7 @@ class InmueblesList extends Component {
                       <Button
                         size="small"
                         color="secondary"
-                        onClick={() => this.deleteHouseFromFirestore(house.id)}
+                        onClick={() => this.deleteHouseFromFirestore(house)}
                       >
                         Eliminar
                       </Button>
