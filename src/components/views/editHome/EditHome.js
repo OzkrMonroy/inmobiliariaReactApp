@@ -4,10 +4,13 @@ import { Container, Paper, Grid, Breadcrumbs, Typography, TextField, Button, Tab
 import ImageUploader from 'react-images-upload'
 import HomeIcon from '@material-ui/icons/Home'
 import { style } from './editHomeStyles'
+import { displaySnackBar } from '../../../session/actions/snackBarAction'
 
 import uuid from 'uuid';
 
 import { consumerFirebase } from '../../../server'
+import { SessionStateContext } from '../../../session/sessionStore'
+import { createKeywords } from '../../../session/actions/Keyword';
 
 const initialState = {
   address: '',
@@ -20,6 +23,8 @@ const initialState = {
 }
 
 class EditHome extends Component {
+
+  static contextType = SessionStateContext
 
   state = {
     newHomeData : initialState,
@@ -48,23 +53,98 @@ class EditHome extends Component {
   }
 
   handleOnClick = () => {
+    const { newHomeData } = this.state
+    const { firebase, history } = this.props
+    const { id } = this.props.match.params
+    const [{session}, dispatch] = this.context
+
+    const searchText = `${newHomeData.address} ${newHomeData.city} ${newHomeData.country}`
+    let keywords = createKeywords(searchText)
+
+    newHomeData.keywords = keywords
+
+    firebase.db
+    .collection('Homes')
+    .doc(id)
+    .set(newHomeData, {merge:true})
+    .then(success => {
+      history.push('/')
+      displaySnackBar(dispatch, {
+        isOpen : true,
+        message: `Los datos se actualizaron correctamente.`
+      })
+    })
 
   }
 
+  //TODO: Mostrar un spinner de carga.
   savePhotosTemp = photosTemp => {
+    const { newHomeData } = this.state
+    const { firebase } = this.props
+    const { id } = this.props.match.params
+    const [{session}, dispatch] = this.context
+
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+
     Object.keys(photosTemp).forEach(key => {
-      photosTemp[key].urlTemp = URL.createObjectURL(photosTemp[key])
+      photosTemp[key].alias = photosTemp[key].name.replace(/\s/g, '_').toLowerCase()
     })
 
-    this.setState({
-      photosTemp : this.state.photosTemp.concat(photosTemp)
-    })
+    firebase.saveFilesInStorage(photosTemp, firebase.auth.currentUser.uid, houseName)
+            .then(urlArray => {
+              newHomeData.photos = newHomeData.photos.concat(urlArray)
+
+              firebase.db
+              .collection('Homes')
+              .doc(id)
+              .set(newHomeData, {merge:true})
+              .then(success => {
+                this.setState({
+                  newHomeData
+                })
+              })
+              .catch(error => {
+                displaySnackBar(dispatch, {
+                  isOpen : true,
+                  message: `Ocurrió un error: ${error}`
+                })
+              })
+            })
   }
 
-  deletePhotoTemp = photoName => () => {
-    this.setState({
-      photosTemp : this.state.photosTemp.filter(photo => photo.name !== photoName)
+  deletePhotoTemp = photoUrl => async () => {
+    const { newHomeData } = this.state
+    const { firebase } = this.props
+    const { id } = this.props.match.params
+    const [{session}, dispatch] = this.context
+
+    let photoName = photoUrl.match(/[\w-]+.(jpg|png|jpeg|gif|svg)/)
+    photoName = photoName[0].replace("2F", "")
+
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+
+    await firebase.deleteFileInStorage(photoName, firebase.auth.currentUser.uid, houseName)
+
+    let photoList = newHomeData.photos.filter(photo => photo !== photoUrl)
+
+    newHomeData.photos = photoList
+
+    firebase.db
+    .collection('Homes')
+    .doc(id)
+    .set(newHomeData, {merge:true})
+    .then(success => {
+      this.setState({
+        newHomeData
+      })
     })
+    .catch(error => {
+      displaySnackBar(dispatch, {
+        isOpen : true,
+        message: `Ocurrió un error: ${error}`
+      })
+    })
+
   }
 
 //TODO: Crear un componente para los elementos que muestran las fotos.

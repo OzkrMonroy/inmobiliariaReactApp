@@ -49,6 +49,12 @@ class Firebase {
   }
 
   saveFilesInStorage = (documents, userName, houseName) => this.storage.ref().saveDocuments(documents, userName, houseName)
+
+  deleteFileInStorage = (fileName, userName,  houseName) => {
+    const path = `${userName}/housesPhotos/${houseName}`
+
+    return this.storage.ref().child(path+'/'+fileName).delete()
+  }
 }
 
 export default Firebase
