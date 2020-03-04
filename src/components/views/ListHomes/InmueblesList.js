@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
-import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField, Card, CardContent, CardActions, Button, CardMedia } from '@material-ui/core'
+import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 
 import { style } from './inmueblesListStyle'
 import logo from '../../../logo.svg'
 import { consumerFirebase } from '../../../server';
+import CardListHomes from '../../cards/CardListHomes';
+import { SecondarySpinner } from '../../spinner';
 
 class InmueblesList extends Component {
 
   state = {
     houses: [],
     searchText: "",
+    isLoading: true
   }
 
   setSearchText = e => {
     const self = this
 
     self.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      isLoading: true
     })
 
     if(self.state.typingTimeOut){
@@ -48,14 +52,14 @@ class InmueblesList extends Component {
           })
 
           self.setState({
-            houses : housesArray
+            houses : housesArray,
+            isLoading: false
           })
         })
       }, 500)
     })
   }
 
-  //TODO: Crear un método para eliminar las imágenes.
   deleteHouseFromFirestore = house => {
     const { firebase } = this.props
 
@@ -100,12 +104,11 @@ class InmueblesList extends Component {
     })
 
     this.setState({
-      houses : housesArray
+      houses : housesArray,
+      isLoading: false
     })
   }
 
-  //TODO: Mostrar un spinner mientras se cargan los datos
-  //TODO: Mover las cards a un componente distinto e independiente
   render() {
     return (
       <Container style={style.cardGrid}>
@@ -136,39 +139,19 @@ class InmueblesList extends Component {
 
           <Grid item xs={12} ms={12} style={style.gridTextField}>
             <Grid container spacing={4}>
-              {this.state.houses.map(house => (
-                <Grid item key={house.id} xs={12} ms={6} md={4}>
-                  <Card style={style.card}>
-                    <CardMedia 
-                      style={style.cardMedia}
-                      image={
-                        house.photos ? house.photos[0].url : logo
-                      }
-                      title="My House"
-                    />
-                    <CardContent style={style.cardContet}>
-                      <Typography gutterBottom variant="h5" component="h2">
-                        {`${house.city}, ${house.country}`}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <Button
-                        size="small"
-                        color="primary"
-                        onClick={() => this.redirectToEditHouse(house.id)}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        size="small"
-                        color="secondary"
-                        onClick={() => this.deleteHouseFromFirestore(house)}
-                      >
-                        Eliminar
-                      </Button>
-                    </CardActions>
-                  </Card>
+              {this.state.isLoading ?
+                <Grid item xs={12} style={style.spinnerContainer}>
+                  <SecondarySpinner color="primary" size={50}/>
                 </Grid>
+               : this.state.houses.map(house => (
+                <CardListHomes
+                  key={house.id}
+                  item={house}
+                  style={style}
+                  redirectToEditHouse={this.redirectToEditHouse}
+                  deleteHouseFromFirestore={this.deleteHouseFromFirestore}
+                  logo={logo}
+                />
               ))}
             </Grid>
           </Grid>

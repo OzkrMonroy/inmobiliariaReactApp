@@ -24,5 +24,8 @@ export const style = {
   },
   cardContet: {
     flexGrow: 1
+  },
+  spinnerContainer : {
+    minHeight: "25vh",
   }
 }

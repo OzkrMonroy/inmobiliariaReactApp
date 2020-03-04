@@ -13,9 +13,10 @@ export const useStyles = makeStyles(theme => ({
   },
   progress : {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 'auto'
   }
 }))
