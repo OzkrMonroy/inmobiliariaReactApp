@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Grid } from "@material-ui/core";
+import { Grid, CircularProgress } from "@material-ui/core";
 //Theme settings
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme/theme";
@@ -75,7 +75,7 @@ function App(props) {
         </MuiThemeProvider>
       </Router>
     </Fragment>
-  ) : null;
+  ) : <CircularProgress/> ;
 }
 
 export default App;
