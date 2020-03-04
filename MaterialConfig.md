@@ -59,4 +59,4 @@ Material-UI posee colors predeterminados que suelen dar a nuestra aplicación un
   export default App;
   ```
 
-**MuiThemeProvider** a través de su atributo **theme** nos permite indicarle cual va a ser el tema que deberá implementar a los elementos de la aplicación. Todos los elementos que se encuentren dentro se verán afectados por el tema establecido.
+**MuiThemeProvider** a través de su atributo **theme** nos permite indicarle cual va a ser el tema que deberá implementar a los elementos de la aplicación. Todos los elementos que se encuentren dentro se verán afectados por el tema establecido. (prueba)

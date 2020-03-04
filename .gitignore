@@ -10,15 +10,17 @@
 
 # production
 /build
+/.firebase
 
 # firebase files and Notes
-# /.firebaserc
-# /firebase.json
-# /FirebaseConfig.md
-# /firestore.indexes.json
-# /firestore.rules
-# /MaterialConfig.md
-# /storage.rules
+BeforeStepsForDeploy.md
+.firebaserc
+firebase.json
+FirebaseConfig.md
+firestore.indexes.json
+firestore.rules
+MaterialConfig.md
+storage.rules
 
 # misc
 .DS_Store

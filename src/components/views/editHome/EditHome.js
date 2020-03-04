@@ -118,7 +118,7 @@ class EditHome extends Component {
               })
             })
   }
-
+  //TODO: Agregar un AlertDialog de confirmacón para eliminar
   deletePhotoTemp = photoS => async () => {
     const { newHomeData } = this.state
     const { firebase } = this.props
