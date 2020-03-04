@@ -6,6 +6,7 @@ import { consumerFirebase } from '../../server'
 import { SessionStateContext } from '../../session/sessionStore'
 
 import BarSession from './bar/BarSession';
+import DefaultBar from './bar/defaultBar/DefaultBar';
 
 const styles = theme => ({
   sectionDesktop: {
@@ -72,8 +73,8 @@ class AppNavbar extends Component {
           <BarSession/>
         </AppBar>
       </div>
-    ): null)
-    : null
+    ): <DefaultBar/> )
+    : <DefaultBar/>
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Grid, CircularProgress } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 //Theme settings
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme/theme";
@@ -13,6 +13,7 @@ import SnackBar from "./components/snackBar/SnackBar";
 import UserProfile from "./components/views/userProfile/UserProfile";
 import NewHome from "./components/views/newHome/NewHome";
 import EditHome from "./components/views/editHome/EditHome";
+import { MainSpinner } from "./components/spinner";
 
 // Auth and security
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
@@ -75,7 +76,7 @@ function App(props) {
         </MuiThemeProvider>
       </Router>
     </Fragment>
-  ) : <CircularProgress/> ;
+  ) : <MainSpinner/> ;
 }
 
 export default App;
