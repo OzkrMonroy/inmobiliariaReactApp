@@ -5,15 +5,18 @@ import HomeIcon from '@material-ui/icons/Home'
 import { style } from './inmueblesListStyle'
 import logo from '../../../logo.svg'
 import { consumerFirebase } from '../../../server';
-import CardListHomes from '../../cards/CardListHomes';
+import CardListHomes from './cards/CardListHomes';
 import { SecondarySpinner } from '../../spinner';
+import AlertDialog from './alerts/AlertDialog';
 
 class InmueblesList extends Component {
 
   state = {
     houses: [],
     searchText: "",
-    isLoading: true
+    isLoading: true,
+    alertIsOpen: false,
+    houseToDelete: {}
   }
 
   setSearchText = e => {
@@ -60,10 +63,17 @@ class InmueblesList extends Component {
     })
   }
 
+  setDataForDelete = (house, alertIsOpen) => {
+    this.setState({
+      houseToDelete: house,
+      alertIsOpen
+    })
+  }
+
   deleteHouseFromFirestore = house => {
     const { firebase } = this.props
 
-    const houseName = `${house.address}_${house.city}_${house.country}`
+    const houseName = `${house.address}_${house.city}_${house.country}`.replace(/\s/g, '_').toLowerCase()
 
     house.photos.forEach(async photo => {
       
@@ -141,7 +151,7 @@ class InmueblesList extends Component {
             <Grid container spacing={4}>
               {this.state.isLoading ?
                 <Grid item xs={12} style={style.spinnerContainer}>
-                  <SecondarySpinner color="primary" size={50}/>
+                  <SecondarySpinner color="primary" size={50} containerHeight={style.height} />
                 </Grid>
                : this.state.houses.map(house => (
                 <CardListHomes
@@ -149,13 +159,14 @@ class InmueblesList extends Component {
                   item={house}
                   style={style}
                   redirectToEditHouse={this.redirectToEditHouse}
-                  deleteHouseFromFirestore={this.deleteHouseFromFirestore}
+                  setDataForDelete={this.setDataForDelete}
                   logo={logo}
                 />
               ))}
             </Grid>
           </Grid>
         </Paper>
+        <AlertDialog house={this.state.houseToDelete} isOpen={this.state.alertIsOpen} deleteHouseFromFirestore={this.deleteHouseFromFirestore} setDataForDelete={this.setDataForDelete}/>
       </Container>
     );
   }

@@ -7,8 +7,7 @@ export const style = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '20px',
-    bacgroundColor: '#f5f5f5'
+    padding: '20px'
   },
   link : {
     display: 'flex',
@@ -25,5 +24,8 @@ export const style = {
   },
   photo : {
     height: '100px'
+  },
+  height : {
+    height: '100%'
   }
 }

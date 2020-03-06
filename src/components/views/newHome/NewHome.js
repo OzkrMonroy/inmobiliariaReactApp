@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Paper, Grid, Breadcrumbs, Typography, TextField, Button, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { Container, Paper, Grid, Breadcrumbs, Typography, TextField, Button, CircularProgress } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 import HomeIcon from '@material-ui/icons/Home'
 import ImageUploader from 'react-images-upload'
 
 import { style } from './newHomeStyle'
 import { displaySnackBar } from '../../../session/actions/snackBarAction'
+import PhotosSelectedList from '../../photosList/PhotosSelectedList';
 
 import { consumerFirebase } from '../../../server'
 import { SessionStateContext } from '../../../session/sessionStore'
@@ -28,7 +29,8 @@ class NewHome extends Component {
 
   state = {
     newHomeData : initialState,
-    photosTemp: []
+    photosTemp: [],
+    isSaved: false
   }
 
   handleOnChange = e => {
@@ -41,13 +43,16 @@ class NewHome extends Component {
   }
 
   //TODO: Crear una relación para saber que usuario creo el nuevo registro.
-  //TODO: Crear un spinner de carga mientras se crea el nuevo registro. Mejorar la ubicacion de las fotos
   handleOnClick = () => {
     const { newHomeData, photosTemp } = this.state
     const { firebase, history } = this.props
     const [{session}, dispatch] = this.context
 
-    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+    this.setState({
+      isSaved: true
+    })
+
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`.replace(/\s/g, '_').toLowerCase()
 
     const searchText = `${newHomeData.address} ${newHomeData.city} ${newHomeData.country}`
     let keywords = createKeywords(searchText)
@@ -75,6 +80,9 @@ class NewHome extends Component {
               .add(newHomeData)
               .then(success => {
                 history.push('/')
+                this.setState({
+                  isSaved: false
+                })
                 displaySnackBar(dispatch, {
                   isOpen : true,
                   message: 'Se agregó el inmueble correctamente'
@@ -91,7 +99,7 @@ class NewHome extends Component {
 
   savePhotosTemp = photosTemp => {
     Object.keys(photosTemp).forEach(key => {
-      photosTemp[key].urlTemp = URL.createObjectURL(photosTemp[key])
+      photosTemp[key].url = URL.createObjectURL(photosTemp[key])
     })
 
     this.setState({
@@ -99,13 +107,12 @@ class NewHome extends Component {
     })
   }
 
-  deletePhotoTemp = photoName => () => {
+  deletePhotoTemp = photoTemp => () => {
     this.setState({
-      photosTemp : this.state.photosTemp.filter(photo => photo.name !== photoName)
+      photosTemp : this.state.photosTemp.filter(photo => photo.name !== photoTemp.name)
     })
   }
 
-  //TODO: Mejorar la forma en que se muestran las fotos.
   render() {
     let imageKey = uuid.v4()
 
@@ -186,27 +193,12 @@ class NewHome extends Component {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Table>
-                <TableBody>
-                  {this.state.photosTemp.map((photoTemp, i) => (
-                    <TableRow key={i}>
-                      <TableCell align="left">
-                        <img src={photoTemp.urlTemp} style={style.photo}/>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size="small"
-                          onClick={this.deletePhotoTemp(photoTemp.name)}
-                        >
-                          Eliminar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <PhotosSelectedList 
+                isLoading={false}
+                deletePhotoTemp={this.deletePhotoTemp}
+                style={style}
+                photos={this.state.photosTemp}
+              />
             </Grid>
           </Grid>
 
@@ -221,7 +213,7 @@ class NewHome extends Component {
                 style={style.button}
                 onClick={this.handleOnClick}
               >
-                Guardar
+                {this.state.isSaved ? <CircularProgress color="inherit" size={24}/> : "Guardar"}
               </Button>
             </Grid>
           </Grid>

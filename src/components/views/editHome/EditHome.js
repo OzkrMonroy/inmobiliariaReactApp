@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import { Container, Paper, Grid, Breadcrumbs, Typography, TextField, Button, Table, TableBody, TableRow, TableCell } from '@material-ui/core';
+import { Container, Paper, Grid, Breadcrumbs, Typography, TextField, Button } from '@material-ui/core';
 import ImageUploader from 'react-images-upload'
 import HomeIcon from '@material-ui/icons/Home'
 import { style } from './editHomeStyles'
 import { displaySnackBar } from '../../../session/actions/snackBarAction'
+import PhotosSelectedList from '../../photosList/PhotosSelectedList';
 
 import uuid from 'uuid';
 
 import { consumerFirebase } from '../../../server'
 import { SessionStateContext } from '../../../session/sessionStore'
 import { createKeywords } from '../../../session/actions/Keyword';
+import { SecondarySpinner } from '../../spinner';
 
 const initialState = {
   address: '',
@@ -28,7 +30,9 @@ class EditHome extends Component {
 
   state = {
     newHomeData : initialState,
-    photosTemp: []
+    photosTemp: [],
+    isLoading: true,
+    isSaved: false
   }
 
   async componentDidMount() {
@@ -39,7 +43,8 @@ class EditHome extends Component {
     const homeData = await homeCollection.doc(id).get()
 
     this.setState({
-      newHomeData : homeData.data()
+      newHomeData : homeData.data(),
+      isLoading: false
     })
   }
 
@@ -58,6 +63,10 @@ class EditHome extends Component {
     const { id } = this.props.match.params
     const [{session}, dispatch] = this.context
 
+    this.setState({
+      isSaved: true
+    })
+
     const searchText = `${newHomeData.address} ${newHomeData.city} ${newHomeData.country}`
     let keywords = createKeywords(searchText)
 
@@ -69,6 +78,9 @@ class EditHome extends Component {
     .set(newHomeData, {merge:true})
     .then(success => {
       history.push('/')
+      this.setState({
+        isSaved: false
+      })
       displaySnackBar(dispatch, {
         isOpen : true,
         message: `Los datos se actualizaron correctamente.`
@@ -77,14 +89,17 @@ class EditHome extends Component {
 
   }
 
-  //TODO: Mostrar un spinner de carga.
   savePhotosTemp = photosTemp => {
     const { newHomeData } = this.state
     const { firebase } = this.props
     const { id } = this.props.match.params
     const [{session}, dispatch] = this.context
 
-    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+    this.setState({
+      isLoading: true
+    })
+
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`.replace(/\s/g, '_').toLowerCase()
 
     Object.keys(photosTemp).forEach(key => {
       photosTemp[key].alias = photosTemp[key].name.replace(/\s/g, '_').toLowerCase()
@@ -107,7 +122,8 @@ class EditHome extends Component {
               .set(newHomeData, {merge:true})
               .then(success => {
                 this.setState({
-                  newHomeData
+                  newHomeData,
+                  isLoading: false
                 })
               })
               .catch(error => {
@@ -118,14 +134,18 @@ class EditHome extends Component {
               })
             })
   }
-  //TODO: Agregar un AlertDialog de confirmacón para eliminar
+
   deletePhotoTemp = photoS => async () => {
     const { newHomeData } = this.state
     const { firebase } = this.props
     const { id } = this.props.match.params
     const [{session}, dispatch] = this.context
 
-    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`
+    this.setState({
+      isLoading: true
+    })
+
+    const houseName = `${newHomeData.address}_${newHomeData.city}_${newHomeData.country}`.replace(/\s/g, '_').toLowerCase()
 
     await firebase.deleteFileInStorage(photoS.name, firebase.auth.currentUser.uid, houseName)
 
@@ -139,7 +159,8 @@ class EditHome extends Component {
     .set(newHomeData, {merge:true})
     .then(success => {
       this.setState({
-        newHomeData
+        newHomeData,
+        isLoading: false
       })
     })
     .catch(error => {
@@ -151,10 +172,9 @@ class EditHome extends Component {
 
   }
 
-//TODO: Crear un componente para los elementos que muestran las fotos.
   render() {
     let imageKey = uuid.v4()
-
+    const { isLoading, isSaved } = this.state
     return (
       <Container style={style.container}>
         <Paper style={style.paper}>
@@ -229,29 +249,12 @@ class EditHome extends Component {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Table>
-                <TableBody>
-                  {this.state.newHomeData.photos
-                  ? this.state.newHomeData.photos.map((photo, i) => (
-                    <TableRow key={i}>
-                      <TableCell align="left">
-                        <img src={photo.url} style={style.photo}/>
-                      </TableCell>
-                      <TableCell aling="left">
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          size="small"
-                          onClick={this.deletePhotoTemp(photo)}
-                        >
-                          Eliminar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                  : ""}
-                </TableBody>
-              </Table>
+              <PhotosSelectedList 
+                isLoading={isLoading}
+                deletePhotoTemp={this.deletePhotoTemp}
+                style={style}
+                photos={this.state.newHomeData.photos}
+              />
             </Grid>
           </Grid>
 
@@ -266,7 +269,7 @@ class EditHome extends Component {
                 style={style.button}
                 onClick={this.handleOnClick}
               >
-                Guardar
+                {isSaved ? <SecondarySpinner color="inherit" containerHeight={style.buttonHeight} size={24} /> : "Guardar"}
               </Button>
             </Grid>
           </Grid>

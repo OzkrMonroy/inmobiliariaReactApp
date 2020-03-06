@@ -5,7 +5,7 @@ import { compose } from 'recompose'
 import { consumerFirebase } from '../../server'
 import { SessionStateContext } from '../../session/sessionStore'
 
-import BarSession from './bar/BarSession';
+import BarSession from './bar/barSession/BarSession';
 import DefaultBar from './bar/defaultBar/DefaultBar';
 
 const styles = theme => ({
@@ -31,7 +31,6 @@ class AppNavbar extends Component {
     firebase: null
   }
 
-  //TODO: Optimizar esta parte
   componentDidMount(){
     const { firebase } = this.state
     const [{ session }, dispatch ] = this.context
@@ -73,7 +72,7 @@ class AppNavbar extends Component {
           <BarSession/>
         </AppBar>
       </div>
-    ): <DefaultBar/> )
+    ): <DefaultBar/>)
     : <DefaultBar/>
   }
 }

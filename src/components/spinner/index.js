@@ -16,13 +16,13 @@ export const MainSpinner = () => {
   );
 }
 
-export const SecondarySpinner = props => {
+export const SecondarySpinner = ({color, size, containerHeight}) => {
   const classes = useStyles()
   
   return (
     <MuiThemeProvider theme={theme}>
-      <div className={classes.container}>
-        <CircularProgress color={props.color} className={classes.progress} size={props.size}/>
+      <div className={classes.container} style={containerHeight} >
+        <CircularProgress color={color} className={classes.progress} size={size}/>
       </div>
     </MuiThemeProvider>
   )

@@ -58,4 +58,3 @@ class Firebase {
 }
 
 export default Firebase
-//TODO: Crear un método para borrar las imágnes (firebaseFile)

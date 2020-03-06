@@ -23,5 +23,11 @@ export const style = {
   },
   photo : {
     height: "100px"
+  },
+  height : {
+    height: "100px"
+  },
+  buttonHeight: {
+    height: "24px"
   }
 }

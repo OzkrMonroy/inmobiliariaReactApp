@@ -3,47 +3,16 @@ import { withRouter, Link } from 'react-router-dom'
 import { Toolbar, Typography, withStyles, Button, IconButton, Drawer, Avatar } from '@material-ui/core'
 import { compose } from 'recompose'
 
-import { consumerFirebase } from '../../../server'
-import { SignOutAction } from '../../../session/actions/sessionAction'
-import { SessionStateContext } from '../../../session/sessionStore'
+import { consumerFirebase } from '../../../../server'
+import { SignOutAction } from '../../../../session/actions/sessionAction'
+import { SessionStateContext } from '../../../../session/sessionStore'
 
-import { RightDrawerMenu } from './menus/RightDrawerMenu'
-import { LeftDrawerMenu } from './menus/LeftDrawerMenu'
-import userPhotoTemp from '../../../logo.svg'
+import { RightDrawerMenu } from '../menus/RightDrawerMenu'
+import { LeftDrawerMenu } from '../menus/LeftDrawerMenu'
 
-//TODO: Optimizar los estilos
-const styles = theme => ({
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')] : {
-      display: 'flex'
-    }
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')] : {
-      display: 'none'
-    }
-  },
-  grow: {
-    flexGrow: 1
-  },
-  avatarSize: {
-    width: 40,
-    height: 40
-  },
-  list : {
-    width: 240
-  },
-  listItemText : {
-    fontSize: "16px",
-    fontWeight: 600,
-    paddingLeft: "15px",
-    color: "#212121"
-  }
-})
+import userPhotoTemp from '../../../../logo.svg'
+import { styles } from './barSessionStyles'
 
-//TODO: Optimizar esto con props (elemento firebase).
 class BarSession extends Component {
 
   static contextType = SessionStateContext
@@ -129,7 +98,7 @@ class BarSession extends Component {
             <IconButton color="inherit" component={Link} to="">
               <i className="material-icons">mail_outline</i>
             </IconButton>
-            <Button color="inherit" onClick={this.signOut}>Signout</Button>
+            <Button color="inherit" onClick={this.signOut}>Salir</Button>
             <Button color="inherit">{textUser}</Button>
             <Avatar src={user.photo || userPhotoTemp}></Avatar>
           </div>

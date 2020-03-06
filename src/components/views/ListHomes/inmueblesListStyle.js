@@ -4,7 +4,6 @@ export const style = {
     paddingBottom: 8
   },
   paper: {
-    // backgroundColor: "#f5f5f5",
     padding: "20px",
     minHeight: "50vh"
   },
@@ -27,5 +26,8 @@ export const style = {
   },
   spinnerContainer : {
     minHeight: "25vh",
+  },
+  height : {
+    height: '100%'
   }
 }

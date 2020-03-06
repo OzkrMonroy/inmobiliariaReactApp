@@ -1,5 +1,3 @@
-// import { initialState } from '../initState'
-
 export const signinAction = (dispatch, firebase, email, password) => {
 
   return new Promise((resolve, reject) => {

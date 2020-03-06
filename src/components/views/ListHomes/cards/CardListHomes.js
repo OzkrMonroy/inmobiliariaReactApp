@@ -1,14 +1,14 @@
 import React from "react";
 import { Grid, Typography, Card, CardContent, CardActions, Button, CardMedia } from "@material-ui/core";
 
-const CardListHomes = ({ item, style, redirectToEditHouse, deleteHouseFromFirestore, logo}) => {
-  //TODO: Agregar un alertDialog de confirmación de Eliminación
+const CardListHomes = ({ item, style, redirectToEditHouse, logo, setDataForDelete}) => {
+  
   return (
     <Grid item xs={12} ms={6} md={4}>
       <Card style={style.card}>
         <CardMedia
           style={style.cardMedia}
-          image={item.photos ? item.photos[0].url : logo}
+          image={item.photos.length ? item.photos[0].url : logo}
           title="My House"
         />
         <CardContent style={style.cardContet}>
@@ -27,7 +27,7 @@ const CardListHomes = ({ item, style, redirectToEditHouse, deleteHouseFromFirest
           <Button
             size="small"
             color="secondary"
-            onClick={() => deleteHouseFromFirestore(item)}
+            onClick={() => setDataForDelete(item, true)}
           >
             Eliminar
           </Button>
@@ -38,3 +38,5 @@ const CardListHomes = ({ item, style, redirectToEditHouse, deleteHouseFromFirest
 };
 
 export default CardListHomes;
+
+// onClick={() => deleteHouseFromFirestore(item)}

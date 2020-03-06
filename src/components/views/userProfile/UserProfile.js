@@ -3,12 +3,13 @@ import { Container, Avatar, Typography, Grid, TextField, Button } from "@materia
 // Global State
 import { useSessionStateValue } from "../../../session/sessionStore";
 import { consumerFirebase } from "../../../server";
-
-import { styles } from "./userProfileStyles";
-import userDefaultPhoto from "../../../logo.svg";
 import { displaySnackBar } from "../../../session/actions/snackBarAction";
 
+import { useStyles, style } from "./userProfileStyles";
+import userDefaultPhoto from "../../../logo.svg";
+
 import ImageUploader from 'react-images-upload'
+import { SecondarySpinner } from '../../spinner'
 import uuid from 'uuid'
 
 let initialState = {
@@ -23,6 +24,8 @@ let initialState = {
 const UserProfile = props => {
   const [{ session }, dispatch] = useSessionStateValue();
   let [userState, setUserState] = useState(initialState);
+
+  const classes = useStyles();
 
   const { firebase } = props;
 
@@ -106,13 +109,13 @@ const UserProfile = props => {
 
   return session ? (
     <Container component="main" maxWidth="md" justify="center">
-      <div style={styles.paper}>
-        <Avatar src={userState.photo || userDefaultPhoto} />
+      <div className={classes.paper}>
+        <Avatar src={userState.photo || userDefaultPhoto} className={classes.avatar}/>
         <Typography component="h1" variant="h5">
           Mi cuenta
         </Typography>
       </div>
-      <form style={styles.form} onSubmit={handleOnSubmit}>
+      <form className={classes.form} onSubmit={handleOnSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -174,7 +177,7 @@ const UserProfile = props => {
               color="primary"
               fullWidth
               size="large"
-              style={styles.submit}
+              className={classes.submit}
             >
               Guardar Cambios
             </Button>
@@ -182,7 +185,7 @@ const UserProfile = props => {
         </Grid>
       </form>
     </Container>
-  ) : null;
+  ) : <SecondarySpinner color="primary" size={50} containerHeight={style.height} />;
 };
 
 export default consumerFirebase(UserProfile);
