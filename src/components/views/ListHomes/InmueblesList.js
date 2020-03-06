@@ -140,7 +140,7 @@ class InmueblesList extends Component {
                 shrink: true
               }}
               name="searchText"
-              label="Busque por dirección, ciudad o país"
+              label="Buscar inmueble"
               value={this.state.searchText}
               onChange={this.setSearchText}
               variant="outlined"
