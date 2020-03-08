@@ -4,14 +4,14 @@ import 'firebase/auth'
 import 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD2stxpjMUHTE8n-e7tHIjOlGi4w1ivzXg",
-  authDomain: "gestionpropiedades-3bca6.firebaseapp.com",
-  databaseURL: "https://gestionpropiedades-3bca6.firebaseio.com",
-  projectId: "gestionpropiedades-3bca6",
-  storageBucket: "gestionpropiedades-3bca6.appspot.com",
-  messagingSenderId: "364779489391",
-  appId: "1:364779489391:web:259d980651dffc9f2e659a",
-  measurementId: "G-NVE582M3VL"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATA_BASE_URL,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER,
+  appId: process.env.REACT_APP_APP_ID,
+  measurementId: process.env.REACT_APP_MEASUREMENT_ID
 };
 
 class Firebase {
