@@ -9,7 +9,7 @@ import { consumerFirebase } from '../../../server';
 import CardListHomes from './cards/CardListHomes';
 import { SecondarySpinner } from '../../spinner';
 import AlertDialog from './alerts/AlertDialog';
-import { getData } from '../../../session/actions/InmueblesListAction';
+import { getData, getPreviousData } from '../../../session/actions/InmueblesListAction';
 
 class InmueblesList extends Component {
 
@@ -128,7 +128,7 @@ class InmueblesList extends Component {
     this.props.history.push(`/homes/edit/${id}`)
   }
 
-  nextPage = () => {
+  nextPage = async () => {
     const { pageSize, searchText, initialHouse, pageResult, currentlyPage } = this.state
     const { firebase } = this.props
 
@@ -136,9 +136,41 @@ class InmueblesList extends Component {
       isLoading: true
     })
 
-    getData(firebase, pageSize, pageResult[currentlyPage].lastHouse, searchText )
-    .then(firebaseReturnData => {
-      if(firebaseReturnData.housesArray.length > 0 ) {
+    const firebaseReturnData = await getData(firebase, pageSize, pageResult[currentlyPage].lastHouse,searchText)
+
+    if(firebaseReturnData.housesArray.length > 0 ) {
+      const page = {
+        firstHouse : firebaseReturnData.firstHouse,
+        lastHouse: firebaseReturnData.lastHouse
+      }
+  
+      pageResult.push(page)
+  
+      this.setState({
+        houses: firebaseReturnData.housesArray,
+        pageResult,
+        currentlyPage: currentlyPage + 1,
+        isLoading: false
+      })
+    }else {
+      this.setState({
+        isLoading: false
+      })
+    }
+  }
+
+  previousPage = () => {
+    const { pageSize, searchText, pageResult, currentlyPage } = this.state
+    const { firebase } = this.props
+
+    if(currentlyPage > 0) {
+
+      this.setState({
+        isLoading: true
+      })
+
+      getPreviousData(firebase, pageSize, pageResult[currentlyPage -1].firstHouse, searchText )
+      .then(firebaseReturnData => {
         const page = {
           firstHouse : firebaseReturnData.firstHouse,
           lastHouse: firebaseReturnData.lastHouse
@@ -149,11 +181,11 @@ class InmueblesList extends Component {
         this.setState({
           houses: firebaseReturnData.housesArray,
           pageResult,
-          currentlyPage: currentlyPage + 1,
+          currentlyPage: currentlyPage - 1,
           isLoading: false
         })
-      }
-    })
+      })
+    }
   }
 
   render() {
@@ -187,7 +219,7 @@ class InmueblesList extends Component {
           <Grid item xs={12} ms={12} style={style.buttonsBar}>
             <Grid container spacing={1} direction="column" alignItems="flex-end">
               <ButtonGroup size="small" aria-label="small outlined group">
-                <Button>
+                <Button onClick={this.previousPage}>
                   <ArrowLeft/>
                 </Button>
                 <Button onClick={this.nextPage}>
