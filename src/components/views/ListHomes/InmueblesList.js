@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField, ButtonGroup } from '@material-ui/core'
+import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField, ButtonGroup, Button } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
 import { ArrowLeft, ArrowRight } from '@material-ui/icons'
 
@@ -9,15 +9,41 @@ import { consumerFirebase } from '../../../server';
 import CardListHomes from './cards/CardListHomes';
 import { SecondarySpinner } from '../../spinner';
 import AlertDialog from './alerts/AlertDialog';
+import { getData } from '../../../session/actions/InmueblesListAction';
 
 class InmueblesList extends Component {
 
   state = {
     houses: [],
     searchText: "",
+    pageResult: [],
+    pageSize: 1,
+    initialHouse: null,
+    currentlyPage: null,
     isLoading: true,
     alertIsOpen: false,
     houseToDelete: {}
+  }
+
+  async componentDidMount() {
+    const { pageSize, searchText, initialHouse, pageResult } = this.state
+    const { firebase } = this.props
+
+    const firebaseReturnData = await getData(firebase, pageSize, initialHouse, searchText )
+
+    const page = {
+      firstHouse : firebaseReturnData.firstHouse,
+      lastHouse: firebaseReturnData.lastHouse
+    }
+
+    pageResult.push(page)
+
+    this.setState({
+      houses: firebaseReturnData.housesArray,
+      pageResult,
+      currentlyPage: 0,
+      isLoading: false
+    })
   }
 
   setSearchText = e => {
@@ -102,21 +128,31 @@ class InmueblesList extends Component {
     this.props.history.push(`/homes/edit/${id}`)
   }
 
-  async componentDidMount() {
-    let objectQuery = this.props.firebase.db.collection("Homes").orderBy("address")
-
-    const snapshot = await objectQuery.get()
-
-    const housesArray = snapshot.docs.map(doc => {
-      let data = doc.data()
-      let id = doc.id
-
-      return {id, ...data}
-    })
+  nextPage = () => {
+    const { pageSize, searchText, initialHouse, pageResult, currentlyPage } = this.state
+    const { firebase } = this.props
 
     this.setState({
-      houses : housesArray,
-      isLoading: false
+      isLoading: true
+    })
+
+    getData(firebase, pageSize, pageResult[currentlyPage].lastHouse, searchText )
+    .then(firebaseReturnData => {
+      if(firebaseReturnData.housesArray.length > 0 ) {
+        const page = {
+          firstHouse : firebaseReturnData.firstHouse,
+          lastHouse: firebaseReturnData.lastHouse
+        }
+    
+        pageResult.push(page)
+    
+        this.setState({
+          houses: firebaseReturnData.housesArray,
+          pageResult,
+          currentlyPage: currentlyPage + 1,
+          isLoading: false
+        })
+      }
     })
   }
 
@@ -154,7 +190,7 @@ class InmueblesList extends Component {
                 <Button>
                   <ArrowLeft/>
                 </Button>
-                <Button>
+                <Button onClick={this.nextPage}>
                   <ArrowRight/>
                 </Button>
               </ButtonGroup>

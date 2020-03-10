@@ -1,4 +1,4 @@
-export const getData = (firebase, pageSize, initialHouse, textSearch) => {
+export const getData = (firebase, pageSize, initialHouse, searchText) => {
   return new Promise(async (resolve, reject) => {
     let houses = firebase.db
                  .collection("Homes")
@@ -12,11 +12,11 @@ export const getData = (firebase, pageSize, initialHouse, textSearch) => {
                .startAfter(initialHouse)
                .limit(pageSize)
 
-      if(textSearch.trim() !== "") {
+      if(searchText.trim() !== "") {
         houses = firebase.db
                  .collection("Homes")
                  .orderBy("address")
-                 .where("keywords", "array-contains", textSearch.toLowerCase())
+                 .where("keywords", "array-contains", searchText.toLowerCase())
                  .startAfter(initialHouse)
                  .limit(pageSize)
       }
