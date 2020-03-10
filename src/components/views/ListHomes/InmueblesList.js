@@ -11,6 +11,7 @@ import { SecondarySpinner } from '../../spinner';
 import AlertDialog from './alerts/AlertDialog';
 import { getData, getPreviousData } from '../../../session/actions/InmueblesListAction';
 
+//TODO: Mejorar las funciones de la paginación.
 class InmueblesList extends Component {
 
   state = {
@@ -61,31 +62,26 @@ class InmueblesList extends Component {
     self.setState({
       name : e.target.value,
       typing: false,
-      typingTimeOut : setTimeout(() => {
-        let objectQuery = self.props.firebase.db
-        .collection("Homes")
-        .orderBy("address")
-        .where("keywords", "array-contains", self.state.searchText.toLowerCase())
+      typingTimeOut : setTimeout(goTime => {
+        const { pageSize, searchText } = self.state
+        const { firebase } = self.props
 
-        if(self.state.searchText.trim() === ""){
-          objectQuery = self.props.firebase.db
-          .collection("Homes")
-          .orderBy("address")
-        }
-
-        objectQuery.get().then(snapshot => {
-          const housesArray = snapshot.docs.map(doc => {
-            let data = doc.data()
-            let id = doc.id
-
-            return {id, ...data}
+          getPreviousData(firebase, pageSize, 0, searchText )
+          .then(firebaseReturnData => {
+            const page = {
+              firstHouse : firebaseReturnData.firstHouse,
+              lastHouse: firebaseReturnData.lastHouse
+            }
+            const pageResult = []
+            pageResult.push(page)
+        
+            this.setState({
+              houses: firebaseReturnData.housesArray,
+              pageResult,
+              currentlyPage: 0,
+              isLoading: false
+            })
           })
-
-          self.setState({
-            houses : housesArray,
-            isLoading: false
-          })
-        })
       }, 500)
     })
   }
