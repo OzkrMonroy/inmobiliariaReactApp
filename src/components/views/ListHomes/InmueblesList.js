@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField } from '@material-ui/core'
+import { Container, Paper, Grid, Breadcrumbs, Link, Typography, TextField, ButtonGroup } from '@material-ui/core'
 import HomeIcon from '@material-ui/icons/Home'
+import { ArrowLeft, ArrowRight } from '@material-ui/icons'
 
 import { style } from './inmueblesListStyle'
 import logo from '../../../logo.svg'
@@ -145,6 +146,19 @@ class InmueblesList extends Component {
               onChange={this.setSearchText}
               variant="outlined"
             />
+          </Grid>
+
+          <Grid item xs={12} ms={12} style={style.buttonsBar}>
+            <Grid container spacing={1} direction="column" alignItems="flex-end">
+              <ButtonGroup size="small" aria-label="small outlined group">
+                <Button>
+                  <ArrowLeft/>
+                </Button>
+                <Button>
+                  <ArrowRight/>
+                </Button>
+              </ButtonGroup>
+            </Grid>
           </Grid>
 
           <Grid item xs={12} ms={12} style={style.gridTextField}>

@@ -29,5 +29,8 @@ export const style = {
   },
   height : {
     height: '100%'
+  },
+  buttonsBar: {
+    marginTop: "20px"
   }
 }
