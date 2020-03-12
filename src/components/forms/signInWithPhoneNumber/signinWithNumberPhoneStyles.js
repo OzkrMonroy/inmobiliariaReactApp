@@ -13,17 +13,15 @@ const style = {
     width: '100%',
     marginTop: 10
   },
+  textField : {
+    marginBottom : '20px'
+  },
   submit : {
-    marginTop: '15px',
     marginBottom: '20px'
   },
-  buttonLink : {
-    textDecoration: 'none',
-    color: "#fff"
-  },
-  link : {
-    textDecoration: 'none',
-    color: 'rgba(0, 0, 0, 0.7)'
+  captcha : {
+    flexGrow: 1,
+    marginBottom: '20px'
   }
 }
 

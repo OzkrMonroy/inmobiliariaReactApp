@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Avatar, Typography, TextField, Button } from "@material-ui/core";
+import { Container, Avatar, Typography, TextField, Button, Grid } from "@material-ui/core";
 import LockOutLineIcon from "@material-ui/icons/LockOutlined";
 
 import { compose } from 'recompose'
@@ -10,6 +10,7 @@ import { displaySnackBar } from '../../../session/actions/snackBarAction'
 import { SessionStateContext } from '../../../session/sessionStore'
 
 import style from "./signinFormStyles";
+import { Link } from "react-router-dom";
 
 const initialState = {
   userEmail :'',
@@ -65,6 +66,25 @@ class SigninForm extends Component {
 
   }
 
+  resetPassword = () => {
+    const { firebase, userData } = this.state
+    const [{session}, dispatch] = this.context
+
+    firebase.auth.sendPasswordResetEmail(userData.userEmail)
+    .then(sucess => {
+      displaySnackBar(dispatch, {
+        isOpen: true,
+        message: "Se te ha enviado un correo electrónico."
+      })
+    })
+    .catch(error => {
+      displaySnackBar(dispatch, {
+        isOpen: true,
+        message: error.message
+      })
+    })
+  }
+
   render() {
 
     const { userEmail, userPassword } = this.state.userData
@@ -104,10 +124,33 @@ class SigninForm extends Component {
               color="primary"
               fullWidth
               margin="normal"
+              style={style.submit}
             >
-              Enviar
+              Iniciar sesión
             </Button>
+
+            <Grid container>
+              <Grid item xs>
+                <Link style={style.link} onClick={this.resetPassword}>
+                  <Typography variant="body2">¿Olvidó su contraseña?</Typography>
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link to="/signup" style={style.link}>
+                  <Typography variant="body2">¿No tienes cuenta? Regístrate</Typography>
+                </Link>
+              </Grid>
+            </Grid>
           </form>
+
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            style={style.submit} 
+          >
+            <Link to="/signinWithPhoneNumber" style={style.buttonLink}>Ingresar con número de teléfono</Link>
+          </Button>
         </div>
       </Container>
     );

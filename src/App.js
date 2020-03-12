@@ -14,6 +14,7 @@ import UserProfile from "./components/views/userProfile/UserProfile";
 import NewHome from "./components/views/newHome/NewHome";
 import EditHome from "./components/views/editHome/EditHome";
 import { MainSpinner } from "./components/spinner";
+import SigninWithNumberPhone from "./components/forms/signInWithPhoneNumber/SigninWithNumberPhone";
 
 // Auth and security
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
@@ -69,6 +70,7 @@ function App(props) {
               />
               <Route path="/signup" exact component={SignupForm} />
               <Route path="/signin" exact component={SigninForm} />
+              <Route path="/signinWithPhoneNumber" exact component={SigninWithNumberPhone} />
             </Switch>
           </Grid>
         </MuiThemeProvider>

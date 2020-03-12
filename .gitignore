@@ -11,6 +11,7 @@
 # production
 /build
 /.firebase
+/.vscode
 
 # firebase files and Notes
 BeforeStepsForDeploy.md
@@ -21,6 +22,7 @@ firestore.indexes.json
 firestore.rules
 MaterialConfig.md
 storage.rules
+
 
 # misc
 .env
