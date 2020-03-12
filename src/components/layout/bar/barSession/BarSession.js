@@ -55,7 +55,11 @@ class BarSession extends Component {
     const {classes} = this.props
     const [{session}, dispatch] = this.context
     const {user} = session
-    const textUser = `${user.name} ${user.lastName}`
+    let textUser = `${user.name} ${user.lastName}`
+
+    if(!user.name){
+      textUser = user.phoneNumber
+    }
 
     return (
       <div>
