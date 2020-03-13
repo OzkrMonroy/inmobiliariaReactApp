@@ -103,10 +103,7 @@ class InmueblesList extends Component {
       await firebase.deleteFileInStorage(photo.name, firebase.auth.currentUser.uid, houseName)
     })
 
-    firebase.db
-    .collection("Homes")
-    .doc(house.id)
-    .delete()
+    firebase.deleteDocumentFromFirestore('Homes', house.id)
     .then(succes =>{
       this.deleteHouseFromState(house.id)
     })

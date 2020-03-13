@@ -1,3 +1,5 @@
+import { initialUserState } from '../../utils'
+
 export const signinAction = (dispatch, firebase, email, password) => {
 
   return new Promise((resolve, reject) => {
@@ -6,10 +8,7 @@ export const signinAction = (dispatch, firebase, email, password) => {
     .signInWithEmailAndPassword(email, password)
     .then(auth => {
       
-      firebase.db
-      .collection('Users')
-      .doc(auth.user.uid)
-      .get()
+      firebase.getDocumentFromFirestore('Users', auth.user.uid)
       .then(doc => {
         const usuarioDB = doc.data()
 
@@ -37,15 +36,14 @@ export const createUserAction = (dispatch, firebase, user) => {
     firebase.auth
     .createUserWithEmailAndPassword(user.userEmail, user.userPassword)
     .then(auth => {
-      firebase.db
-      .collection('Users')
-      .doc(auth.user.uid)
-      .set({
+      const userData = {
         id : auth.user.uid,
         email: user.userEmail,
         name: user.userName,
         lastName: user.userLastName
-      }, {merge: true})
+      }
+
+      firebase.updateDocumentToFirestore('Users', auth.user.uid, userData)
       .then(doc => {
         user.id = auth.user.uid
         
@@ -69,7 +67,6 @@ export const createUserAction = (dispatch, firebase, user) => {
   })
 }
 
-//TODO: Optimizar esta parte
 export const SignOutAction = (dispatch, firebase) => {
   return new Promise((resolve, reject) => {
 
@@ -78,14 +75,7 @@ export const SignOutAction = (dispatch, firebase) => {
     .then(result => {
       dispatch({
         type: 'SIGNOUT',
-        newUser: {
-          name: '',
-          lastName: '',
-          email: '',
-          photo: '',
-          id: '',
-          phoneNumber: ''
-        },
+        newUser: initialUserState,
         isAuthenticated: false
       })
       resolve()

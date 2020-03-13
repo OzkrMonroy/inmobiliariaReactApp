@@ -38,6 +38,22 @@ class Firebase {
     })
   }
 
+  addDocumentToFirestore = (collectionName, data) => {
+    return this.db.collection(collectionName).add(data)
+  }
+
+  updateDocumentToFirestore = (collectionName, documentId, data) => {
+    return this.db.collection(collectionName).doc(documentId).set(data, {merge:true})
+  }
+
+  getDocumentFromFirestore = (collectionName, documentId) => {
+    return this.db.collection(collectionName).doc(documentId).get()
+  }
+
+  deleteDocumentFromFirestore = (collectionName, documentId) => {
+    return this.db.collection(collectionName).doc(documentId).delete()
+  }
+
   saveFileInStorage = (fileName, file, userName) => {
     const path = `${userName}/profilePhoto/${fileName}`
 

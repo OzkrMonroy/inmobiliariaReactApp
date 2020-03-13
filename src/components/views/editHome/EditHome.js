@@ -6,31 +6,21 @@ import HomeIcon from '@material-ui/icons/Home'
 import { style } from './editHomeStyles'
 import { displaySnackBar } from '../../../session/actions/snackBarAction'
 import PhotosSelectedList from '../../photosList/PhotosSelectedList';
+import { SecondarySpinner } from '../../spinner';
 
 import uuid from 'uuid';
 
 import { consumerFirebase } from '../../../server'
 import { SessionStateContext } from '../../../session/sessionStore'
 import { createKeywords } from '../../../session/actions/Keyword';
-import { SecondarySpinner } from '../../spinner';
-
-const initialState = {
-  address: '',
-  city: '',
-  country: '',
-  description: '',
-  insideDescription: '',
-  photos: [],
-  keywords: [],
-  createdBy: ''
-}
+import { initialHomeState } from '../../../utils'
 
 class EditHome extends Component {
 
   static contextType = SessionStateContext
 
   state = {
-    newHomeData : initialState,
+    newHomeData : initialHomeState,
     photosTemp: [],
     isLoading: true,
     isSaved: false
@@ -40,8 +30,7 @@ class EditHome extends Component {
     const { id } = this.props.match.params
     const { firebase } = this.props
 
-    const homeCollection = firebase.db.collection("Homes")
-    const homeData = await homeCollection.doc(id).get()
+    const homeData = await firebase.getDocumentFromFirestore('Homes', id)
 
     this.setState({
       newHomeData : homeData.data(),
@@ -74,10 +63,7 @@ class EditHome extends Component {
     newHomeData.keywords = keywords
     newHomeData.createdBy = firebase.auth.currentUser.uid
 
-    firebase.db
-    .collection('Homes')
-    .doc(id)
-    .set(newHomeData, {merge:true})
+    firebase.updateDocumentToFirestore('Homes', id, newHomeData)
     .then(success => {
       history.push('/')
       this.setState({
@@ -118,10 +104,7 @@ class EditHome extends Component {
                 newHomeData.photos = newHomeData.photos.concat(data)
               })
 
-              firebase.db
-              .collection('Homes')
-              .doc(id)
-              .set(newHomeData, {merge:true})
+              firebase.updateDocumentToFirestore('Homes', id, newHomeData)
               .then(success => {
                 this.setState({
                   newHomeData,
@@ -155,10 +138,7 @@ class EditHome extends Component {
 
     newHomeData.photos = photoList
 
-    firebase.db
-    .collection('Homes')
-    .doc(id)
-    .set(newHomeData, {merge:true})
+    firebase.updateDocumentToFirestore('Homes', id, newHomeData)
     .then(success => {
       this.setState({
         newHomeData,

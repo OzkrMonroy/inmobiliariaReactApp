@@ -10,26 +10,17 @@ import PhotosSelectedList from '../../photosList/PhotosSelectedList';
 
 import { consumerFirebase } from '../../../server'
 import { SessionStateContext } from '../../../session/sessionStore'
-import uuid from 'uuid';
 import { createKeywords } from '../../../session/actions/Keyword';
+import { initialHomeState } from '../../../utils'
 
-const initialState = {
-  address: '',
-  city: '',
-  country: '',
-  description: '',
-  insideDescription: '',
-  photos: [],
-  keywords: [],
-  createdBy: ''
-}
+import uuid from 'uuid';
 
 class NewHome extends Component {
 
   static contextType = SessionStateContext
 
   state = {
-    newHomeData : initialState,
+    newHomeData : initialHomeState,
     photosTemp: [],
     isSaved: false
   }
@@ -76,9 +67,7 @@ class NewHome extends Component {
               newHomeData.keywords = keywords
               newHomeData.createdBy = firebase.auth.currentUser.uid
 
-              firebase.db
-              .collection('Homes')
-              .add(newHomeData)
+              firebase.addDocumentToFirestore('Homes', newHomeData)
               .then(success => {
                 history.push('/')
                 this.setState({

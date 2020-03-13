@@ -10,20 +10,13 @@ import userDefaultPhoto from "../../../logo.svg";
 
 import ImageUploader from 'react-images-upload'
 import { SecondarySpinner } from '../../spinner'
-import uuid from 'uuid'
+import { initialUserState } from '../../../utils'
 
-let initialState = {
-  name: "",
-  lastName: "",
-  email: "",
-  photo: "",
-  id: "",
-  phoneNumber: ""
-};
+import uuid from 'uuid'
 
 const UserProfile = props => {
   const [{ session }, dispatch] = useSessionStateValue();
-  let [userState, setUserState] = useState(initialState);
+  let [userState, setUserState] = useState(initialUserState);
 
   const classes = useStyles();
 
@@ -39,11 +32,9 @@ const UserProfile = props => {
 
   const handleOnSubmit = e => {
     e.preventDefault();
+    const userID = firebase.auth.currentUser.uid
 
-    firebase.db
-      .collection("Users")
-      .doc(firebase.auth.currentUser.uid)
-      .set(userState, { merge: true })
+    firebase.updateDocumentToFirestore('Users', userID, userState)
       .then(success => {
         dispatch({
           type: "CHANGE_SESSION",
@@ -77,19 +68,17 @@ const UserProfile = props => {
     const photo = photos[0]
     const photoName = photo.name
     const photoExtension = photoName.split('.').pop()
+    const userID = firebase.auth.currentUser.uid
     
     const profilePhotoName = ('profilePhoto.' + photoExtension).replace(/\s/g, '_').toLowerCase()
 
-    firebase.saveFileInStorage(profilePhotoName, photo, firebase.auth.currentUser.uid)
+    firebase.saveFileInStorage(profilePhotoName, photo, userID)
     .then(metaData => {
-      firebase.getFileUrl(profilePhotoName, firebase.auth.currentUser.uid)
+      firebase.getFileUrl(profilePhotoName, userID)
       .then(urlPhoto => {
         userState.photo = urlPhoto
 
-        firebase.db
-        .collection('Users')
-        .doc(firebase.auth.currentUser.uid)
-        .set({photo : urlPhoto}, {merge: true})
+        firebase.updateDocumentToFirestore('Users', userID, {photo : urlPhoto})
         .then(userDB => {
           dispatch({
             type: "CHANGE_SESSION",

@@ -129,6 +129,15 @@ class SigninForm extends Component {
               Iniciar sesión
             </Button>
 
+            <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            style={style.button}
+          >
+            <Link to="/signinWithPhoneNumber" style={style.buttonLink}>Ingresar con número de teléfono</Link>
+          </Button>
+
             <Grid container>
               <Grid item xs>
                 <Link style={style.link} onClick={this.resetPassword}>
@@ -143,14 +152,6 @@ class SigninForm extends Component {
             </Grid>
           </form>
 
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={style.submit} 
-          >
-            <Link to="/signinWithPhoneNumber" style={style.buttonLink}>Ingresar con número de teléfono</Link>
-          </Button>
         </div>
       </Container>
     );
