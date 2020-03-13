@@ -20,7 +20,8 @@ const initialState = {
   description: '',
   insideDescription: '',
   photos: [],
-  keywords: []
+  keywords: [],
+  createdBy: ''
 }
 
 class NewHome extends Component {
@@ -42,7 +43,6 @@ class NewHome extends Component {
     })
   }
 
-  //TODO: Crear una relación para saber que usuario creo el nuevo registro.
   handleOnClick = () => {
     const { newHomeData, photosTemp } = this.state
     const { firebase, history } = this.props
@@ -74,6 +74,7 @@ class NewHome extends Component {
               })
               newHomeData.photos = photosArray
               newHomeData.keywords = keywords
+              newHomeData.createdBy = firebase.auth.currentUser.uid
 
               firebase.db
               .collection('Homes')

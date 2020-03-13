@@ -21,7 +21,8 @@ const initialState = {
   description: '',
   insideDescription: '',
   photos: [],
-  keywords: []
+  keywords: [],
+  createdBy: ''
 }
 
 class EditHome extends Component {
@@ -71,6 +72,7 @@ class EditHome extends Component {
     let keywords = createKeywords(searchText)
 
     newHomeData.keywords = keywords
+    newHomeData.createdBy = firebase.auth.currentUser.uid
 
     firebase.db
     .collection('Homes')

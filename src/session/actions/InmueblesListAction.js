@@ -2,12 +2,14 @@ export const getData = (firebase, pageSize, initialHouse, searchText) => {
   return new Promise(async (resolve, reject) => {
     let houses = firebase.db
                  .collection("Homes")
+                 .where("createdBy", "==", firebase.auth.currentUser.uid)
                  .orderBy("address")
                  .limit(pageSize)
 
     if(initialHouse !== null) {
       houses = firebase.db
                .collection("Homes")
+               .where("createdBy", "==", firebase.auth.currentUser.uid)
                .orderBy("address")
                .startAfter(initialHouse)
                .limit(pageSize)
@@ -15,6 +17,7 @@ export const getData = (firebase, pageSize, initialHouse, searchText) => {
       if(searchText.trim() !== "") {
         houses = firebase.db
                  .collection("Homes")
+                 .where("createdBy", "==", firebase.auth.currentUser.uid)
                  .orderBy("address")
                  .where("keywords", "array-contains", searchText.toLowerCase())
                  .startAfter(initialHouse)
@@ -49,12 +52,14 @@ export const getPreviousData = (firebase, pageSize, initialHouse, searchText) =>
   return new Promise(async (resolve, reject) => {
     let houses = firebase.db
                  .collection("Homes")
+                 .where("createdBy", "==", firebase.auth.currentUser.uid)
                  .orderBy("address")
                  .limit(pageSize)
 
     if(initialHouse !== null) {
       houses = firebase.db
                .collection("Homes")
+               .where("createdBy", "==", firebase.auth.currentUser.uid)
                .orderBy("address")
                .startAt(initialHouse)
                .limit(pageSize)
@@ -62,6 +67,7 @@ export const getPreviousData = (firebase, pageSize, initialHouse, searchText) =>
       if(searchText.trim() !== "") {
         houses = firebase.db
                  .collection("Homes")
+                 .where("createdBy", "==", firebase.auth.currentUser.uid)
                  .orderBy("address")
                  .where("keywords", "array-contains", searchText.toLowerCase())
                  .startAt(initialHouse)
