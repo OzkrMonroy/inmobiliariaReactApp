@@ -18,7 +18,7 @@ class InmueblesList extends Component {
     houses: [],
     searchText: "",
     pageResult: [],
-    pageSize: 1,
+    pageSize: 25,
     initialHouse: null,
     currentlyPage: null,
     isLoading: true,
