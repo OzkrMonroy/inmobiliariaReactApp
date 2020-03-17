@@ -22,6 +22,9 @@ import { FirebaseContext } from "./server";
 
 //Representación del context Provider
 import { useSessionStateValue } from "./session/sessionStore";
+// Redux Provider
+import store from './redux/store';
+import { Provider } from 'react-redux'
 
 function App(props) {
   let firebase = useContext(FirebaseContext);
@@ -36,46 +39,48 @@ function App(props) {
   }, [firebase]);
 
   return isFirebaseReady !== false ? (
-    <Fragment>
-      <SnackBar openSnackBar={openSnackBar} dispatch={dispatch} />
+    <Provider store={store}>
+      <Fragment>
+        <SnackBar openSnackBar={openSnackBar} dispatch={dispatch} />
 
-      <Router>
-        <MuiThemeProvider theme={theme}>
-          <AppNavbar />
-          <Grid container>
-            <Switch>
-              <AuthenticatedRoute
-                exact
-                path="/"
-                authFirebase={firebase.auth.currentUser}
-                component={InmueblesList}
-              />
-              <AuthenticatedRoute
-                exact
-                path="/user/profile"
-                authFirebase={firebase.auth.currentUser}
-                component={UserProfile}
-              />
-              <AuthenticatedRoute
-                exact
-                path="/homes/new"
-                authFirebase={firebase.auth.currentUser}
-                component={NewHome}
-              />
-              <AuthenticatedRoute
-                exact
-                path="/homes/edit/:id"
-                authFirebase={firebase.auth.currentUser}
-                component={EditHome}
-              />
-              <Route path="/signup" exact component={SignupForm} />
-              <Route path="/signin" exact component={SigninForm} />
-              <Route path="/signinWithPhoneNumber" exact component={SigninWithNumberPhone} />
-            </Switch>
-          </Grid>
-        </MuiThemeProvider>
-      </Router>
-    </Fragment>
+        <Router>
+          <MuiThemeProvider theme={theme}>
+            <AppNavbar />
+            <Grid container>
+              <Switch>
+                <AuthenticatedRoute
+                  exact
+                  path="/"
+                  authFirebase={firebase.auth.currentUser}
+                  component={InmueblesList}
+                />
+                <AuthenticatedRoute
+                  exact
+                  path="/user/profile"
+                  authFirebase={firebase.auth.currentUser}
+                  component={UserProfile}
+                />
+                <AuthenticatedRoute
+                  exact
+                  path="/homes/new"
+                  authFirebase={firebase.auth.currentUser}
+                  component={NewHome}
+                />
+                <AuthenticatedRoute
+                  exact
+                  path="/homes/edit/:id"
+                  authFirebase={firebase.auth.currentUser}
+                  component={EditHome}
+                />
+                <Route path="/signup" exact component={SignupForm} />
+                <Route path="/signin" exact component={SigninForm} />
+                <Route path="/signinWithPhoneNumber" exact component={SigninWithNumberPhone} />
+              </Switch>
+            </Grid>
+          </MuiThemeProvider>
+        </Router>
+      </Fragment>
+    </Provider>
   ) : <MainSpinner/> ;
 }
 
