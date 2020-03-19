@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-export const getUserList = (dispatch) => {
+export const getUsersList = (dispatch) => {
   return new Promise( async (resolve, reject) => {
     
     const dataResult  = await axios.get(`${process.env.REACT_APP_USER_LIST_ENDPOINT}/list`)
 
     dispatch({
       type: 'USER_LIST',
-      payload: dataResult.data
+      payload: dataResult.data.users
     })
     resolve()
   })

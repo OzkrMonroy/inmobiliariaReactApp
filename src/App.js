@@ -15,6 +15,7 @@ import NewHome from "./components/views/newHome/NewHome";
 import EditHome from "./components/views/editHome/EditHome";
 import { MainSpinner } from "./components/spinner";
 import SigninWithNumberPhone from "./components/forms/signInWithPhoneNumber/SigninWithNumberPhone";
+import UsersList from "./components/views/userList/UsersList";
 
 // Auth and security
 import AuthenticatedRoute from "./auth/AuthenticatedRoute";
@@ -71,6 +72,12 @@ function App(props) {
                   path="/homes/edit/:id"
                   authFirebase={firebase.auth.currentUser}
                   component={EditHome}
+                />
+                <AuthenticatedRoute
+                  exact
+                  path="/usersList"
+                  authFirebase={firebase.auth.currentUser}
+                  component={UsersList}
                 />
                 <Route path="/signup" exact component={SignupForm} />
                 <Route path="/signin" exact component={SigninForm} />
