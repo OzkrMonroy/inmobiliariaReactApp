@@ -13,10 +13,14 @@ export const getUsersList = (dispatch) => {
   })
 }
 
-export const updateUserRoles = (dispatch, user) => {
+export const updateUserRoles = (dispatch, user, role) => {
   return new Promise(async (resolve, reject) => {
-    
-    const dataResult = await axios.post(`${process.env.REACT_APP_USER_UPDATE_ROLES}`, user)
+    const params = {
+      id: user.id,
+      role: role,
+      roles: user.roles
+    }
+    const dataResult = await axios.post(`${process.env.REACT_APP_USER_UPDATE_ROLES}`, params)
 
     dispatch({
       type: 'USER_MAINTENANCE',

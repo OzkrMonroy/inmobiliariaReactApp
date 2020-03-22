@@ -1,5 +1,14 @@
 import { initialUserState } from '../../utils'
 
+export const refreshSession = firebase => {
+  return new Promise((resolve, reject) => {
+    firebase.auth.onAuthStateChanged(user => {
+      user.getIdToken(true)
+      resolve()
+    })
+  })
+}
+
 export const signinAction = (dispatch, firebase, email, password) => {
 
   return new Promise((resolve, reject) => {

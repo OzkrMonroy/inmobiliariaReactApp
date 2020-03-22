@@ -20,9 +20,9 @@ export const LeftDrawerMenu = ({styleClasses}) => (
         <i className="material-icons">business</i>
         <ListItemText classes={{primary: styleClasses.listItemText}} primary="Inmuebles"/>
       </ListItem>
-      <ListItem component={Link} button to="">
+      <ListItem component={Link} button to="/usersList">
         <i className="material-icons">mail_outline</i>
-        <ListItemText classes={{primary: styleClasses.listItemText}} primary="Mensajes"/>
+        <ListItemText classes={{primary: styleClasses.listItemText}} primary="Usuarios"/>
       </ListItem>
     </List>
   </div>
