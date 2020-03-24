@@ -2,6 +2,7 @@ import app from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/storage'
+import 'firebase/messaging'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -22,6 +23,12 @@ class Firebase {
     this.auth = app.auth()
     this.storage = app.storage()
     this.authorization = app.auth
+
+    this.messaginValidation = app.messaging
+    if(this.messaginValidation.isSupported()) {
+      this.messaging = app.messaging()
+      this.messaging.usePublicVapidKey("BB5UluSzncwIJcSPYHFtD8IaRJlrPxo7yVldt-EvcD6RuHiwyj5UkA7WeftYjhu-8ZAVXTn4QDW4FgF3dfk3y0k")
+    }
 
     this.storage.ref().constructor.prototype.saveDocuments = function(documents, userName, houseName) {
       let ref = this

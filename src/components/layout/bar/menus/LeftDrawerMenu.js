@@ -2,7 +2,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import { List, ListItem, ListItemText, Divider } from '@material-ui/core'
 
-export const LeftDrawerMenu = ({styleClasses}) => (
+export const LeftDrawerMenu = ({styleClasses, getUserNotificationPermission}) => (
   <div className={styleClasses.list}>
     <List>
       <ListItem component={Link} button to="/user/profile" color="inherit">
@@ -21,8 +21,12 @@ export const LeftDrawerMenu = ({styleClasses}) => (
         <ListItemText classes={{primary: styleClasses.listItemText}} primary="Inmuebles"/>
       </ListItem>
       <ListItem component={Link} button to="/usersList">
-        <i className="material-icons">mail_outline</i>
+        <i className="material-icons">group</i>
         <ListItemText classes={{primary: styleClasses.listItemText}} primary="Usuarios"/>
+      </ListItem>
+      <ListItem button onClick={getUserNotificationPermission}>
+        <i className="material-icons">notifications_none</i>
+        <ListItemText classes={{primary: styleClasses.listItemText}} primary="Notificaciones"/>
       </ListItem>
     </List>
   </div>

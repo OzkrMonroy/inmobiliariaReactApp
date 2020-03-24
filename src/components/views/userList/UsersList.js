@@ -32,7 +32,7 @@ const UsersList = (props) => {
         setIsLoaded(true)
       })
     }
-  }, [isLoaded])
+  }, [isLoaded, dispatchRedux])
 
   const sendEmail = email => {
     const obj = {

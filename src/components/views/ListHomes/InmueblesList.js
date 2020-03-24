@@ -122,7 +122,7 @@ class InmueblesList extends Component {
   }
 
   nextPage = async () => {
-    const { pageSize, searchText, initialHouse, pageResult, currentlyPage } = this.state
+    const { pageSize, searchText, pageResult, currentlyPage } = this.state
     const { firebase } = this.props
 
     this.setState({

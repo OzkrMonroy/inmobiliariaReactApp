@@ -12,6 +12,7 @@ import { LeftDrawerMenu } from '../menus/LeftDrawerMenu'
 
 import userPhotoTemp from '../../../../logo.svg'
 import { styles } from './barSessionStyles'
+import { getNotificationPermission } from '../../../../session/actions/notificationAction'
 
 class BarSession extends Component {
 
@@ -51,6 +52,16 @@ class BarSession extends Component {
     })
   }
 
+  getUserNotificationPermission = async () => {
+    const {firebase} = this.props
+    const [{session}, dispatch] = this.context
+    const {user} = session
+
+    if(firebase.messaginValidation.isSupported()){
+      await getNotificationPermission(firebase, user, dispatch)
+    }
+  }
+
   render() {
     const {classes} = this.props
     const [{session}, dispatch] = this.context
@@ -73,7 +84,8 @@ class BarSession extends Component {
             onClick={() => this.toggleDrawer("left", false)}
             onKeyDown={() => this.toggleDrawer("left", false)}
           >
-            <LeftDrawerMenu styleClasses={classes}/>
+            <LeftDrawerMenu styleClasses={classes} 
+              getUserNotificationPermission={this.getUserNotificationPermission}/>
           </div>
         </Drawer>
         <Drawer
