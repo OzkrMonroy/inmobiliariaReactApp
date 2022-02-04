@@ -8,6 +8,7 @@ import { useSessionStateValue } from '../../../session/sessionStore';
 import { displaySnackBar } from '../../../session/actions/snackBarAction';
 import { consumerFirebase } from '../../../server'
 import { refreshSession } from '../../../session/actions/sessionAction';
+import { sendNotification } from '../../../session/actions/notificationAction';
 
 const initialUserSelected = {
   email: '',
@@ -59,6 +60,13 @@ const UsersList = (props) => {
   }
 
   const addRole = async() => {
+    if(selectedRole === '0'){
+      displaySnackBar(dispatch, {
+        isOpen: true,
+        message: "Seleccione un Rol Válido."
+      })
+      return
+    }
     if(!userSelected.roles) {
       userSelected.roles = []
     }
@@ -88,19 +96,32 @@ const UsersList = (props) => {
 
       userSelected.roles.push({name: selectedRole, value: true})
 
-      const response = await updateUserRoles(dispatchRedux, userSelected, customClaims)
-      console.log(response)
-      getUsersList(dispatchRedux)
-      refreshSession(props.firebase)
-
-      displaySnackBar(dispatch, {
-        isOpen: true,
-        message: 'Se guardó el nuevo rol de usuario.'
+      updateUserRoles(dispatchRedux, userSelected, customClaims, props.firebase).then(res => {
+        if(res.data.status !== 'error') {
+          refreshSession(props.firebase)
+    
+          displaySnackBar(dispatch, {
+            isOpen: true,
+            message: 'Se eliminó el rol de usuario.'
+          })
+        }else {
+          const originalRoles = userSelected.roles.filter(role => role.name !== selectedRole.name)
+          setUserSelected({
+            ...userSelected,
+            roles: originalRoles
+          })
+          displaySnackBar(dispatch, {
+            isOpen: true,
+            message: res.data.message
+          })
+        }
+        getUsersList(dispatchRedux)
       })
     }
   }
 
   const removeRole = async roleS => {
+    const originalUserRoles = userSelected.roles
     const newRolesArray = userSelected.roles.filter(role => role.name !== roleS)
     userSelected.roles = newRolesArray
 
@@ -122,15 +143,48 @@ const UsersList = (props) => {
       configurable: true
     })
 
-    const response = await updateUserRoles(dispatchRedux, userSelected, customClaims)
-      console.log(response)
+    // const response = await updateUserRoles(dispatchRedux, userSelected, customClaims)
+    updateUserRoles(dispatchRedux, userSelected, customClaims, props.firebase).then(res => {
+      if(res.data.status !== 'error') {
+        refreshSession(props.firebase)
+  
+        displaySnackBar(dispatch, {
+          isOpen: true,
+          message: 'Se eliminó el rol de usuario.'
+        })
+      }else {
+        setUserSelected({
+          ...userSelected,
+          roles: originalUserRoles
+        })
+        displaySnackBar(dispatch, {
+          isOpen: true,
+          message: res.data.message
+        })
+      }
       getUsersList(dispatchRedux)
-      refreshSession(props.firebase)
+    })
+  }
 
+  const sendPushNotification = user => {
+    if(props.firebase.messaginValidation.isSupported()){
+      const listToken = user.tokenArray
+      const obj = {
+        token: listToken || []
+      }
+
+      sendNotification(obj).then(resp => {
+        displaySnackBar(dispatch, {
+          isOpen: true,
+          message: resp.data.message
+        })
+      })
+    }else {
       displaySnackBar(dispatch, {
         isOpen: true,
-        message: 'Se eliminó el rol de usuario.'
+        message: 'Tu navegador no soporta Push Notifications.'
       })
+    }
   }
 
   //TODO: Crear un componente para el dialog
@@ -199,6 +253,15 @@ const UsersList = (props) => {
                           onClick={() => openAlertDialog(user)}
                         >
                           Roles
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() => sendPushNotification(user)}>
+                          Notification
                         </Button>
                       </TableCell>
                       <TableCell>

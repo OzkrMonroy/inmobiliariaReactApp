@@ -13,4 +13,4 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig)
-const messagin = firebase.messaging()
+const messaging = firebase.messaging()

@@ -23,6 +23,7 @@ import { FirebaseContext } from "./server";
 
 //Representación del context Provider
 import { useSessionStateValue } from "./session/sessionStore";
+import { displaySnackBar } from "./session/actions/snackBarAction";
 // Redux Provider
 import store from './redux/store';
 import { Provider } from 'react-redux'
@@ -37,7 +38,16 @@ function App(props) {
     firebase.isReady().then(val => {
       setIsFirebaseReady(val);
     });
-  }, [firebase]);
+    
+    if(firebase.messaginValidation.isSupported()){
+      firebase.messaging.onMessage(payload => {
+        displaySnackBar(dispatch, {
+          isOpen: true,
+          message: `${payload.notification.title}. ${payload.notification.body}`
+        })
+      })
+    }
+  });
 
   return isFirebaseReady !== false ? (
     <Provider store={store}>
